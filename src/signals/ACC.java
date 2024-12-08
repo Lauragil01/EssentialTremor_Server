@@ -1,5 +1,4 @@
-package Data;
-
+package signals;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
@@ -12,38 +11,35 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class EMG {
+public class ACC {
+        private List<Integer> signalData;
+        private String filename;
+        private String path;
+        private List<Integer> timestamp;
 
-//TODO see how we store this
-
-        private List<Integer> signalData;  //almacenar datos de la señal EMG
-        private String filename;    //nombre archivo donde se almacenan los datos (guardarlo en txt)
-        private String path;        //ruta del archivo
-        private List<Integer> timestamp;   //fecha y hora
-
-        public EMG(List<Integer> signalData, String filename, String path, List<Integer> timestamp) {
+        public ACC(List<Integer> signalData, String filename, String path, List<Integer> timestamp) {
             this.signalData = signalData;
             this.filename = filename;
             this.path = path;
             this.timestamp = timestamp;
         }
 
-    public EMG() {
+
+    public ACC(List<Integer> signalData, List<Integer> timestamp) {
+        this.signalData = signalData;
+        this.timestamp = timestamp;
+    }
+
+    public ACC() {
         this.signalData = new ArrayList<>();
         this.filename = null;
         this.path = null;
         this.timestamp = new ArrayList<>();
     }
 
-    public EMG(List<Integer> emg, List<Integer> time) {
-            this.signalData = emg;
-            this.timestamp = time;
-    }
-
     public List<Integer> getSignalData() {
             return signalData;
         }
-
     public void setSignalData(List<Integer> signalData) {
             this.signalData = signalData;
         }
@@ -72,10 +68,11 @@ public class EMG {
             this.timestamp = timestamp;
         }
 
-    @Override
+        @Override
     public String toString() {
-        return "EMG [filename=" + filename + ", path=" + path + ", timestamp=" + timestamp + "]";
+       return "ACC [filename=" + filename + ", path=" + path + ", timestamp=" + timestamp + ", signalData=" + signalData+"]";
     }
+
     public static String listToString(List<Integer> list) {
         return list.stream()
                 .map(String::valueOf)  // Convierte cada Integer a String
@@ -83,7 +80,7 @@ public class EMG {
     }
 
     public void plotSignal() {
-        XYSeries series = new XYSeries("EMG Signal");
+        XYSeries series = new XYSeries("Acceleration Signal");
 
         for (int i = 0; i < signalData.size(); i++) {
             series.add(timestamp.get(i), signalData.get(i));
@@ -91,9 +88,9 @@ public class EMG {
 
         XYSeriesCollection dataset = new XYSeriesCollection(series);
         JFreeChart chart = ChartFactory.createXYLineChart(
-                "EMG Signal over Time",
+                "Acceleration Signal over Time",
                 "Time (ms)",
-                "EMG",
+                "Acceleration",
                 dataset,
                 PlotOrientation.VERTICAL,
                 true,
@@ -108,5 +105,4 @@ public class EMG {
         frame.pack();
         frame.setVisible(true);
     }
-
 }

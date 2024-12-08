@@ -2,18 +2,18 @@ package pojos;
 
 import java.io.Serializable;
 
+//to STOP  the server
 public class User implements Serializable {
 
     private static final long serialVersionUID = 2L;
     private int id;
     public String username;
-    public byte[] password;
+    String password;
 
     public User() {
     }
 
-    public User(int id, String username, byte[] password) {
-        this.id=id;
+    public User(String username, String password) {
         this.username=username;
         this.password=password;
     }
@@ -26,11 +26,11 @@ public class User implements Serializable {
         this.username = username;
     }
 
-    public byte[] getPassword() {
+    public String getPassword() {
         return password;
     }
 
-    public void setPassword(byte[] password) {
+    public void setPassword(String password) {
         this.password = password;
     }
 

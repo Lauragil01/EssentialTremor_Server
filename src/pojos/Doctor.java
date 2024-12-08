@@ -1,41 +1,33 @@
 package pojos;
 
-import Data.ACC;
-import Data.EMG;
-import jdbc.ConnectionManager;
+
+
+import signals.ACC;
+import signals.EMG;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.PrintWriter;
-import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 public class Doctor {
 
     private User user;
-    private int id;
     private String name;
     private String surname;
     private List<Patient> patients;
     private List<MedicalRecord> medicalRecords;
     private List<DoctorsNote> doctorsNotes;
-    private ConnectionManager access;
 
-    public Doctor() {
-
-    }
 
     public Doctor(String name, String surname, List<Patient> patients) {
         this.name = name;
         this.surname = surname;
         this.patients = patients;
-        this.doctorsNotes = new ArrayList<>();
         this.medicalRecords = new ArrayList<>();
+        this.doctorsNotes = new ArrayList<>();
     }
 
     public Doctor(String name, String surname) {
@@ -50,7 +42,7 @@ public class Doctor {
     public String toString() {
         return "Doctor{" +
                 "name='" + name + '\'' +
-                ", surname='" + surname + '\'' +
+                ", surname='" + surname + '\''+
                 '}';
     }
 
@@ -78,25 +70,17 @@ public class Doctor {
         this.surname = surname;
     }
 
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Doctor doctor = (Doctor) o;
-        return Objects.equals(name, doctor.name) && Objects.equals(surname, doctor.surname) && Objects.equals(patients, doctor.patients) && Objects.equals(access, doctor.access);
+        return Objects.equals(name, doctor.name) && Objects.equals(surname, doctor.surname) && Objects.equals(patients, doctor.patients);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, surname, patients, access);
+        return Objects.hash(name, surname, patients);
     }
 
     public void setPatients(List<Patient> patients) {
@@ -113,10 +97,6 @@ public class Doctor {
 
     public List<Patient> getPatients() {
         return patients;
-    }
-
-    public ConnectionManager getAccess() {
-        return access;
     }
 
     private Patient choosePatient() {
@@ -157,17 +137,15 @@ public class Doctor {
 
         ACC acc1 = new ACC(listAcc, listTime);
         EMG emg1 = new EMG(listEmg, listTime);
-        medicalRecord = new MedicalRecord(patientName, patientSurname, age, weight, height, listSymptoms, acc1, emg1, geneticBackground);
+        medicalRecord = new MedicalRecord(patientName, patientSurname, age, weight, height, listSymptoms, /*acc1, emg1,*/ geneticBackground);
         this.getMedicalRecords().add(medicalRecord);
         medicalRecord.getDoctors().add(this);
         return medicalRecord;
     }
 
-
     public static List<String> splitToStringList(String str) {
         return Arrays.asList(str.split(","));
     }
-
     public static List<Integer> splitToIntegerList(String str) {
         return Arrays.stream(str.split(","))
                 .filter(s -> s.matches("-?\\d+"))  // Solo permite números enteros (positivos o negativos)
@@ -175,13 +153,12 @@ public class Doctor {
                 .collect(Collectors.toList());
     }
 
-    public void showInfoMedicalRecord(MedicalRecord medicalRecord) {
+    private void showInfoMedicalRecord(MedicalRecord medicalRecord){
         System.out.println(medicalRecord);
         medicalRecord.showAcc();
         medicalRecord.showEMG();
     }
-
-    public DoctorsNote createDoctorsNote(MedicalRecord medicalRecord) {
+    private DoctorsNote createDoctorsNote(MedicalRecord medicalRecord){
         //create a note for the medical record
         Scanner sc = new Scanner(System.in);
         System.out.println("\n Write any comments about the medical record (No enters): ");
@@ -193,6 +170,7 @@ public class Doctor {
         return doctorsNote;
     }
 
+    //showDoctorNotes-->to edit the doctor Note
     public void showDoctorNotes() {
         Scanner sc = new Scanner(System.in);
         List<DoctorsNote> notes = this.getDoctorsNote();
@@ -210,7 +188,7 @@ public class Doctor {
         sc.close();
     }
 
-    public void editDoctorNote() {
+    public void editDoctorNote () {
         Scanner sc = new Scanner(System.in);
         List<DoctorsNote> notes = this.getDoctorsNote();
 
@@ -252,7 +230,7 @@ public class Doctor {
         printWriter.println(doctorsNote.getNotes());
     }
 
-    private void addPatient() {
+    private void addPatient(){
         Scanner sc = new Scanner(System.in);
         System.out.println("- Name: ");
         String name = sc.nextLine();
@@ -274,20 +252,17 @@ public class Doctor {
                 System.out.println("---NOT A VALID INPUT, PLEASE TRY AGAIN...");
             }
         }
-        Patient patient = new Patient(name, surname, genBack);
-        patient.getDoctors().add(this);
+        Patient patient = new Patient(name,surname,genBack);
+        //patient.getDoctors().add(this);
         this.getPatients().add(patient);
         sc.close();
     }
 
+
     /*public static void main(String[] args) throws IOException {
         List<Patient> list = null;
-        Doctor d = new Doctor("a", "a", list);
+        Doctor d = new Doctor("a","a",list);
 
-        MedicalRecord mr = d.receiveMedicalRecord();
-
-        DoctorsNote dn = d.createDoctorsNote(mr);
-        d.sendDoctorsNote(dn);
+        d.receiveMedicalRecord();
     }*/
-
 }

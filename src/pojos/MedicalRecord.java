@@ -1,7 +1,9 @@
 package pojos;
 
-import Data.ACC;
-import Data.EMG;
+
+
+import signals.ACC;
+import signals.EMG;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,6 +21,7 @@ public class MedicalRecord {
     private Boolean genetic_background;
     private List<DoctorsNote> doctorsNotes;
     private List<Doctor> doctors;
+
 
     public List<Doctor> getDoctors() {
         return doctors;
@@ -73,13 +76,13 @@ public class MedicalRecord {
         this.patientSurname = patientSurname;
     }
 
-    public void setAcceleration(ACC acceleration) {
+    /*public void setAcceleration(ACC acceleration) {
         this.acceleration = acceleration;
     }
 
     public void setEmg(EMG emg) {
         this.emg = emg;
-    }
+    }*/
 
     public int getAge() {
         return age;
@@ -97,38 +100,48 @@ public class MedicalRecord {
         return symptoms;
     }
 
-    public ACC getAcceleration() {
-        return acceleration;
+   /* public ACC getAcceleration() {
+        //return acceleration;
     }
 
     public EMG getEmg() {
-        return emg;
-    }
+        //return emg;
+    }*/
 
     public MedicalRecord(int age, double weight, int height, List<String> symptoms) {
         this.age = age;
         this.weight = weight;
         this.height = height;
         this.symptoms = symptoms;
-        this.acceleration = new ACC();
-        this.emg = new EMG();
-        this.doctorsNotes = new ArrayList<>();
         this.doctors = new ArrayList<>();
+        this.doctorsNotes = new ArrayList<>();
     }
-
-    public MedicalRecord(String patientName, String patientSurname, int age, double weight, int height, List<String> symptoms, ACC acceleration, EMG emg, Boolean genetic_background) {
+    public MedicalRecord(String patientName, String patientSurname, int age, double weight, int height, List<String> symptoms, Boolean genetic_background) {
         this.patientName = patientName;
         this.patientSurname = patientSurname;
         this.age = age;
         this.weight = weight;
         this.height = height;
         this.symptoms = symptoms;
-        this.acceleration = acceleration;
-        this.emg = emg;
+        /*this.acceleration = acceleration;
+        this.emg = emg;*/
         this.genetic_background = genetic_background;
-        this.doctorsNotes = new ArrayList<>();
         this.doctors = new ArrayList<>();
+        this.doctorsNotes = new ArrayList<>();
     }
+    public MedicalRecord(String patientName, String patientSurname, int age, double weight, int height,Boolean geneticBackground, List<String> symptoms) {
+        this.patientName = patientName;
+        this.patientSurname = patientSurname;
+        this.age = age;
+        this.weight = weight;
+        this.height = height;
+        this.genetic_background = geneticBackground;
+        this.symptoms = symptoms;
+        this.doctorsNotes = new ArrayList<>(); //list vacía
+
+    }
+
+
 
     @Override
     public String toString() {
@@ -140,16 +153,14 @@ public class MedicalRecord {
                 ", height=" + height +
                 ", symptoms=" + symptoms +
                 ", genetic_background=" + genetic_background +
-                ", acc=" + acceleration +
-                ", emg=" + emg +
                 '}';
     }
 
     void showAcc() {
-        //this.acceleration.plotSignal();
+        this.acceleration.plotSignal();
     }
 
     void showEMG(){
-        //this.emg.plotSignal();
+        this.emg.plotSignal();
     }
 }

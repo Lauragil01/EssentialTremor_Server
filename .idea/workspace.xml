@@ -4,20 +4,54 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="cf5eb29e-ec59-48b6-ac09-bd3496151015" name="Changes" comment="main for db">
-      <change afterPath="$PROJECT_DIR$/src/mainServer/MainServer.java" afterDir="false" />
+    <list default="true" id="cf5eb29e-ec59-48b6-ac09-bd3496151015" name="Changes" comment="changes">
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/lib.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/Doctor.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/MedicalRecord.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/Patient.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/Treatment.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/User.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/acc_signals.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/emg_signals.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/sqlite_sequence.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/state.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/jfreechart-1.0.19.jar" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/server/ClientHandler.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/server/MainServer.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/services/DoctorService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/services/MedicalRecordService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/services/PatientService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/utils/CsvHandler.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/utils/PasswordHash.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Main.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/iFaces/DoctorNotes.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/iFaces/DoctorNotes.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/jdbc/ConnectionManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/jdbc/ConnectionManager.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/jdbc/JDBCDoctorManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/jdbc/JDBCDoctorManager.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/jdbc/JDBCDoctorNotes.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/jdbc/JDBCDoctorNotes.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/jdbc/JDBCMedicalRecordManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/jdbc/JDBCMedicalRecordManager.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/jdbc/JDBCPatientManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/jdbc/JDBCPatientManager.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/jdbc/JDBCTreatmentManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/jdbc/JDBCTreatmentManager.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/jdbc/JDBCUserManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/jdbc/JDBCUserManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/EssenetialTremor_Server.iml" beforeDir="false" afterPath="$PROJECT_DIR$/EssenetialTremor_Server.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Data/ACC.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/signals/ACC.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Data/Data.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/signals/Signals.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Data/EMG.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/signals/EMG.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/iFaces/DoctorManager.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/iFaces/DoctorNotes.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/iFaces/InterfaceConnectionManager.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/iFaces/MedicalRecordManager.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/iFaces/PatientManager.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/iFaces/SignalManager.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/iFaces/StateManager.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/iFaces/TreatmentManager.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/iFaces/UserManager.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/jdbc/ConnectionManager.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/jdbc/JDBCDoctorManager.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/jdbc/JDBCDoctorNotes.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/jdbc/JDBCMedicalRecordManager.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/jdbc/JDBCPatientManager.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/jdbc/JDBCSignalManager.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/jdbc/JDBCStateManager.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/jdbc/JDBCTreatmentManager.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/jdbc/JDBCUserManager.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/mainServer/MainServer.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/pojos/Doctor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/pojos/Doctor.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/pojos/DoctorsNote.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/pojos/DoctorsNote.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pojos/MedicalRecord.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/pojos/MedicalRecord.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pojos/Patient.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/pojos/Patient.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pojos/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/pojos/User.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -65,25 +99,31 @@
     "Application.MainServer.executor": "Run",
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "WebServerToolWindowFactoryState": "false",
     "git-widget-placeholder": "master",
     "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "C:/Users/blanc/Downloads/jfreechart-1.0.19/jfreechart-1.0.19/lib/jfreechart-1.0.19.jar",
+    "last_opened_file_path": "C:/Users/Laura Gil/Desktop/Uni/Telemedicina/EssentialTremor_Server2/lib",
     "node.js.detected.package.eslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
     "project.structure.last.edited": "Modules",
     "project.structure.proportion": "0.15",
     "project.structure.side.proportion": "0.2",
+    "settings.editor.selected.configurable": "vcs.Git",
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\Laura Gil\Desktop\Uni\Telemedicina\EssentialTremor_Server2\lib" />
+      <recent name="C:\Users\Laura Gil\Desktop\Uni\Telemedicina\EssentialTremor_Server2\src" />
+      <recent name="C:\Users\Laura Gil\Desktop\Uni\Telemedicina\EssentialTremor_Server2\data" />
       <recent name="C:\Users\marty\IdeaProjects\EssentialTremor_Server\lib" />
       <recent name="C:\Users\blanc\OneDrive\Escritorio\Telemedicine\EssenetialTremor_Server\src\pojos" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\Laura Gil\Desktop\Uni\Telemedicina\EssentialTremor_Server2\lib" />
       <recent name="C:\Users\marty\IdeaProjects\EssentialTremor_Server\lib" />
     </key>
     <key name="CopyClassDialog.RECENTS_KEY">
@@ -113,11 +153,11 @@
       </method>
     </configuration>
     <configuration name="MainServer" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="mainServer.MainServer" />
+      <option name="MAIN_CLASS_NAME" value="server.MainServer" />
       <module name="EssenetialTremor_Server" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="mainServer.*" />
+          <option name="PATTERN" value="server.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
@@ -138,9 +178,14 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="jfreechart-1.0.19.jar" type="JarApplication" temporary="true">
+      <option name="JAR_PATH" value="$PROJECT_DIR$/lib/jfreechart-1.0.19.jar" />
+      <method v="2" />
+    </configuration>
     <recent_temporary>
       <list>
         <item itemvalue="Application.MainServer" />
+        <item itemvalue="JAR Application.jfreechart-1.0.19.jar" />
         <item itemvalue="Application.Main" />
         <item itemvalue="Application.Patient" />
         <item itemvalue="Application.Doctor" />
@@ -217,6 +262,7 @@
     <MESSAGE value="sockets" />
     <MESSAGE value="sockets for DoctorsNote" />
     <MESSAGE value="main for db" />
-    <option name="LAST_COMMIT_MESSAGE" value="main for db" />
+    <MESSAGE value="changes" />
+    <option name="LAST_COMMIT_MESSAGE" value="changes" />
   </component>
 </project>

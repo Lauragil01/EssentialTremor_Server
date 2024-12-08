@@ -1,32 +1,20 @@
-package mainServer;
+package server;
 
-import jdbc.*;
 import pojos.*;
+import services.PatientService;
+import utils.CsvHandler;
+import utils.PasswordHash;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
 import java.util.InputMismatchException;
+import java.util.List;
 import java.util.Scanner;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class MainServer {
 
-    public static ConnectionManager connectionManager;
-    public static JDBCUserManager userManager;
-    public static JDBCDoctorManager doctorManager;
-    public static JDBCDoctorNotes doctorNotesManager;
-    public static JDBCMedicalRecordManager medicalRecordManager;
-    public static JDBCPatientManager patientManager;
-    public static JDBCStateManager stateManager;
-    public static JDBCTreatmentManager treatmentManager;
     private static boolean control;
     private static Scanner sc = new Scanner(System.in);
     private static Doctor doctor;
@@ -35,41 +23,29 @@ public class MainServer {
     private static PrintWriter printWriter;
     private static BufferedReader bufferedReader;
 
-    public static void main(String[] args) {
+    /*public static void main(String[] args) {
         serverSocket = null;
         printWriter = null;
         bufferedReader = null;
-        boolean conexion = true;
 
         try {
-            connectionManager = new ConnectionManager();
-            userManager = new JDBCUserManager(connectionManager);
-            doctorManager = new JDBCDoctorManager(connectionManager);
-            doctorNotesManager = new JDBCDoctorNotes(connectionManager);
-            medicalRecordManager = new JDBCMedicalRecordManager(connectionManager);
-            patientManager = new JDBCPatientManager(connectionManager);
-            stateManager = new JDBCStateManager(connectionManager);
-            treatmentManager = new JDBCTreatmentManager(connectionManager);
-
             //Create socket
-            serverSocket = new ServerSocket(9000);
+            serverSocket = new ServerSocket(12345);
 
             //TODO wait for connections
             try {
-                while (conexion) {
+                while (true) {
                     System.out.println("Waiting for clients...");
                     clientSocket = serverSocket.accept();
                     System.out.println("Client connected.");
-                    new Thread(new Patient()).start();
+                    //TODO: Thread
+                    //new Thread(new Patient(clientSocket)).start();
                     printWriter = new PrintWriter(MainServer.clientSocket.getOutputStream(), true);
                     bufferedReader = new BufferedReader(new InputStreamReader(MainServer.clientSocket.getInputStream()));
 
                     String patientData = bufferedReader.readLine();
                     processPatientData(patientData);
 
-                    // Tables for state and treatment are created MAINTAIN?
-                    stateManager.addState();
-                    treatmentManager.addTreatment();
 
                     int option;
                     try {
@@ -77,11 +53,11 @@ public class MainServer {
                         while (control) {
                             System.out.println("\n@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
                             System.out.println("@@                                                                  @@");
-                            System.out.println("@@                 Welcome.                                         @@");
-                            System.out.println("@@                 1. Register                                      @@");
-                            System.out.println("@@                 2. Login                                         @@");
-                            System.out.println("@@                 0. Exit                                          @@");
+                            System.out.println("@@          Welcome! server opened, listening for patients          @@");
+                            System.out.println("@@                 1. List of patients                              @@");
+                            System.out.println("@@                 2. List medical record                           @@");
                             System.out.println("@@                                                                  @@");
+                            System.out.println("@@                Press 0 to close the Server                       @@");
                             System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
                             System.out.print("\nSelect an option: ");
 
@@ -94,10 +70,8 @@ public class MainServer {
                             }
                             switch (option) {
                                 case 1:
-                                    register();
                                     break;
                                 case 2:
-                                    login();
                                     break;
                                 case 0:
                                     conexion = false;
@@ -113,8 +87,6 @@ public class MainServer {
                     } catch (NumberFormatException e) {
                         System.out.println("  NOT A NUMBER. Closing application... \n");
                         sc.close();
-                    } catch (SQLException ex) {
-                        Logger.getLogger(MainServer.class.getName()).log(Level.SEVERE, null, ex);
                     }
 
 
@@ -129,64 +101,98 @@ public class MainServer {
             releaseResourcesServer(serverSocket);
             sc.close();
         }
-    }
+    }*/
+        private static final int PORT = 12345;
+
+        public static void main(String[] args) {
+            try (ServerSocket serverSocket = new ServerSocket(PORT)) {
+                System.out.println("Server is running on port " + PORT + "...");
+
+                while (true) {
+                    System.out.println("Waiting for clients...");
+                    Socket clientSocket = serverSocket.accept();
+                    System.out.println("Client connected.");
+
+                    ClientHandler clientHandler = new ClientHandler(clientSocket);
+                    Thread thread = new Thread(clientHandler);
+                    thread.start();
+                }
+            } catch (IOException e) {
+                System.err.println("Error starting server: " + e.getMessage());
+            }
+        }
+
+
 
     private static void releaseResourcesServer(ServerSocket serverSocket) {
+        if (serverSocket != null && !serverSocket.isClosed()) {
+            try {
+                serverSocket.close();
+                System.out.println("Server resources released. Goodbye!");
+            } catch (IOException e) {
+                System.err.println("Error closing server resources: " + e.getMessage());
+            }
+        }
+    }
+
+    private static void listAllPatients() {
         try {
-            serverSocket.close();
-        } catch (IOException ex) {
-            Logger.getLogger(MainServer.class.getName()).log(Level.SEVERE, null, ex);
+            List<String[]> patients = CsvHandler.readFromCsv(PatientService.FILE_PATH);
+            System.out.println("\n--- Registered Patients ---");
+            for (String[] patient : patients) {
+                System.out.println(String.join(", ", patient));
+            }
+        } catch (Exception e) {
+            System.err.println("Error reading patient data: " + e.getMessage());
         }
     }
 
 
-    public static void register() throws SQLException {
-        Scanner sc = new Scanner(System.in);
+    private static void showServerMenu(ServerSocket serverSocket) {
+        System.out.println("\n@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
+        System.out.println("@@                                                                  @@");
+        System.out.println("@@                       Server Administration Menu                 @@");
+        System.out.println("@@                 1. List all patients                             @@");
+        System.out.println("@@                 2. Exit                                          @@");
+        System.out.println("@@                                                                  @@");
+        System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
+        System.out.print("\nSelect an option: ");
+
         try {
-            User u = new User();
+            int choice = sc.nextInt();
+            sc.nextLine(); // Consumir el salto de línea
 
-            System.out.println("Let's proceed with the registration:");
-
-            String username, password;
-
-            System.out.print("Username:");
-            username = sc.nextLine();
-            u.setUsername(username);
-
-            System.out.print("Password:");
-            password = sc.nextLine();
-            MessageDigest md = MessageDigest.getInstance("MD5");
-            md.update(password.getBytes());
-            byte[] hash = md.digest();
-            u.setPassword(hash);
-
-            userManager.addUser(u); //the user is added
-
-        } catch (NoSuchAlgorithmException ex) {
-            System.out.println("Error");
+            switch (choice) {
+                case 1:
+                    listAllPatients();
+                    break;
+                case 2:
+                    System.out.println("Exiting server...");
+                    releaseResourcesServer(serverSocket);
+                    System.exit(0);
+                    break;
+                default:
+                    System.out.println("Invalid option. Please try again.");
+            }
+        } catch (InputMismatchException e) {
+            System.out.println("Invalid input. Please enter a valid number.");
+            sc.next(); // Consumir entrada no válida
         }
     }
 
-    public static void login() throws IOException, SQLException {
-        Scanner sc = new Scanner(System.in);
-        System.out.print("Username: ");
-        String username = sc.nextLine();
-        System.out.print("Password: ");
-        String password = sc.nextLine();
-        if (userManager.verifyUsername(username) && userManager.verifyPassword(username, password)) {
-            printWriter.println("LOGIN_SUCCESS");  //respuesta al cliente
-            User u = userManager.getUser(userManager.getId(username));
-            menuUser(u);
-        } else {
-            printWriter.println("LOGIN_FAILED");
-        }
-    }
 
+    //TODO log in correctly--> Pedir al cliente otra vez que pida log in al paciente while(invalid credentials)
+
+
+
+
+    //TODO: REVISIÓN METODO
     public static void menuUser(User u) throws IOException, SQLException {
         int option;
         MedicalRecord mr = null;
         Doctor doctor = null;
-        doctor = doctorManager.getDoctorByUserId(u.getId()); //TODO meter doctor
+        //TODO: SUSTITUTION TO FILE
+        // doctor = doctorManager.getDoctorByUserId(u.getId()); //TODO meter doctor
 
         while (true) {
             printMenuDoctor();
@@ -202,17 +208,18 @@ public class MainServer {
                 case 1: {
                     mr = doctor.receiveMedicalRecord(clientSocket, bufferedReader);
                     if (mr != null) {
-                        medicalRecordManager.addMedicalRecord(mr);
+                        //TODO: SUSTITUTION TO FILE--
+                        //medicalRecordManager.addMedicalRecord(mr);
                     }
                     break;
                 }
                 case 2: {
                     if (mr != null) {
-                        doctor.showInfoMedicalRecord(mr);
+                        //doctor.showInfoMedicalRecord(mr);
                         //TODO option to create doctor note
-                        DoctorsNote dn = chooseToDoDoctorNotes(mr);
-                        mr.getDoctorsNotes().add(dn);
-                        chooseToSendDoctorNotes(dn);
+                        //DoctorsNote dn = chooseToDoDoctorNotes(mr);
+                        //mr.getDoctorsNotes().add(dn);
+                        //chooseToSendDoctorNotes(dn);
                     } else {
                         System.out.println("No medical record detected, please select option one");
                         break;
@@ -235,14 +242,14 @@ public class MainServer {
         System.out.print("\nSelect an option: ");
     }
 
-    public static DoctorsNote chooseToDoDoctorNotes(MedicalRecord mr) {
+    /*public static DoctorsNote chooseToDoDoctorNotes(MedicalRecord mr) {
         System.out.println("\nDo you want to create a doctors note? (y/n)");
         String option = sc.nextLine();
         DoctorsNote dn = null;
         if (option.equalsIgnoreCase("y")) {
             dn = doctor.createDoctorsNote(mr);
             if (dn != null) {
-                doctorNotesManager.addDoctorNote(dn); // Inserción en la base de datos
+                //doctorNotesManager.addDoctorNote(dn); // Inserción en la base de datos
             }
         } else if (!option.equalsIgnoreCase("y") || option.equalsIgnoreCase("n")) {
             System.out.println("Not a valid option, try again...");
@@ -250,7 +257,7 @@ public class MainServer {
         }
         return dn;
     }
-
+*/
     public static void chooseToSendDoctorNotes(DoctorsNote dn) throws IOException {
         System.out.println("\nDo you want to send a doctors note? (y/n)");
         String option = sc.nextLine();
@@ -262,25 +269,47 @@ public class MainServer {
         }
     }
 
-    public static void processPatientData(String patientData) {
-        // Los datos del cliente llegan en formato: "nombre|apellido|genetic_background"
-        String[] data = patientData.split("\\|");
 
-        if (data.length == 3) {
-            String name = data[0];
-            String surname = data[1];
-            boolean geneticBackground = Boolean.parseBoolean(data[2]);
 
-            Patient patient = new Patient();
-            patient.setName(name);
-            patient.setSurname(surname);
-            patient.setGenetic_background(geneticBackground);
-            //TODO añadir user_id al patient
-            patientManager.addPatient(patient);
-            System.out.println("Patient added successfully: " + patient.getName() + " " + patient.getSurname());
-        } else {
-            System.out.println("Error: incorrect patient data format.");
+
+
+    //****************MENU TESTS*******************************
+    /*public static void main(String[] args) {
+        try (ServerSocket serverSocket = new ServerSocket(12345)) {
+            System.out.println("Server is running on port 12345...");
+
+            while (true) {
+                // Aceptar conexión del cliente
+                Socket clientSocket = serverSocket.accept();
+                System.out.println("New client connected.");
+
+                try (
+                        BufferedReader reader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+                        PrintWriter printWriter1 = new PrintWriter(clientSocket.getOutputStream(), true)){
+                    // Leer solicitud del cliente
+                    String clientRequest = reader.readLine();
+                    System.out.println("Received request: " + clientRequest);
+
+                    // Procesar la solicitud
+                    if (clientRequest.startsWith("REGISTER_PATIENT")) {
+                        processPatientData(clientRequest);
+                    } else if (clientRequest.startsWith("LOGIN_PATIENT")) {
+                        processLoginPatient(clientRequest);
+                    } else {
+                        printWriter1.println("ERROR|Unknown request type.");
+                    }
+                } catch (IOException e) {
+                    System.err.println("Error processing client request: " + e.getMessage());
+                } finally {
+                    // Cerrar el socket del cliente después de procesar la solicitud
+                    clientSocket.close();
+                }
+            }
+        } catch (IOException e) {
+            System.err.println("Error starting server: " + e.getMessage());
         }
     }
+*/
+
 
 }

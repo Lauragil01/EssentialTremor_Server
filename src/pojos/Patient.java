@@ -1,26 +1,17 @@
 package pojos;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
-import java.net.ServerSocket;
-import java.net.Socket;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Scanner;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import java.util.stream.Collectors;
+import java.io.*;
+import java.util.*;
 
-public class Patient implements Runnable{
+
+public class Patient {
     private String name;
     private String surname;
     private Boolean genetic_background;
+
     private User user;
     private List<MedicalRecord> medicalRecords;
-    private List<Doctor> doctors;
+    //private List<Doctor> doctors;
 
     public Patient() {
     }
@@ -30,20 +21,20 @@ public class Patient implements Runnable{
         this.surname = surname;
         this.genetic_background = genBack;
         this.medicalRecords = new ArrayList<MedicalRecord>();
-        this.doctors = new ArrayList<Doctor>();
+        //this.doctors = new ArrayList<Doctor>();
     }
 
-    public void setMedicalRecords(List<MedicalRecord> medicalRecords) {
+    /*public void setMedicalRecords(List<MedicalRecord> medicalRecords) {
         this.medicalRecords = medicalRecords;
-    }
+    }*/
 
-    public List<Doctor> getDoctors() {
+    /*public List<Doctor> getDoctors() {
         return doctors;
-    }
+    }*/
 
-    public void setDoctors(List<Doctor> doctors) {
+    /*public void setDoctors(List<Doctor> doctors) {
         this.doctors = doctors;
-    }
+    }*/
 
     public String getName() {
         return name;
@@ -68,7 +59,6 @@ public class Patient implements Runnable{
     public void setUser(User user) {
         this.user = user;
     }
-
     public Boolean getGenetic_background() {
         return genetic_background;
     }
@@ -76,6 +66,7 @@ public class Patient implements Runnable{
     public void setGenetic_background(Boolean genetic_background) {
         this.genetic_background = genetic_background;
     }
+
 
     public List<MedicalRecord> getMedicalRecords() {
         return medicalRecords;
@@ -85,25 +76,136 @@ public class Patient implements Runnable{
         this.medicalRecords = medicalRecords;
     }
 
-    @Override
-    public String toString() {
-        return "- Name: " + name + '\'' +
-                "- Surname: " + surname + '\'';
-                //"- State: " + state +
-                //"- Treatment: " + treatment;
+    public void addMedicalRecord(MedicalRecord medicalRecord) {
+        this.medicalRecords.add(medicalRecord);
     }
-
-    private void openRecord(){
+    /*private void openRecord() {
         MedicalRecord record = askData();
         record.setPatientName(this.name);
         record.setPatientSurname(this.surname);
         record.setGenetic_background(this.genetic_background);
-        //Data data = obtainData();
-        //record.setAcceleration(data.getAcc());
-        //record.setEmg(data.getEmg());
+        Signals signals = obtainSignals();
+        record.setAcceleration(signals.getAcc());
+        record.setEmg(signals.getEmg());
         this.getMedicalRecords().add(record);
     }
 
+    private Signals obtainSignals() {
+        Frame[] frame;
+        Signals signals = null;
+        BITalino bitalino = null;
+        try {
+            bitalino = new BITalino();
+            // Code to find Devices
+            //Only works on some OS
+            Vector<RemoteDevice> devices = bitalino.findDevices();
+            System.out.println(devices);
+
+            //You need TO CHANGE THE MAC ADDRESS
+            //You should have the MAC ADDRESS in a sticker in the Bitalino
+            String macAddress = "20:17:11:20:51:27";
+
+            //Sampling rate, should be 10, 100 or 1000
+            int SamplingRate = 100;
+            bitalino.open(macAddress, SamplingRate);
+
+            //0--1= EMG
+            //5--6=ACC
+            int[] channelsToAcquire = {0, 5};
+            bitalino.start(channelsToAcquire);
+
+            //Objects EMG and ACC
+            ACC acc = new ACC();
+            EMG emg = new EMG();
+
+            //Read in total 10000000 times
+            for (int j = 0; j < 100; j++) {
+
+                //Each time read a block of 10 samples
+                int block_size = 10;
+                frame = bitalino.read(block_size);
+
+                System.out.println("size block: " + frame.length);
+
+                //Print the samples
+                for (int i = 0; i < frame.length; i++) {
+
+                    acc.getTimestamp().add(j * block_size + i);
+                    emg.getTimestamp().add(j * block_size + i);
+
+                    emg.getSignalData().add(frame[i].analog[0]);
+                    acc.getSignalData().add(frame[i].analog[1]);
+                    System.out.println((j * block_size + i)//Time
+                                    + " seq: " + frame[i].seq + " "
+                                    + frame[i].analog[0] + " "//EMG
+                                    + frame[i].analog[1] + " "//ACC
+                            //  + frame[i].analog[2] + " "
+                            //  + frame[i].analog[3] + " "
+                            //  + frame[i].analog[4] + " "
+                            //  + frame[i].analog[5]
+                    );
+
+                }
+            }
+            //stop acquisition
+            bitalino.stop();
+
+            /*System.out.println(emg.getTimestamp());
+            System.out.println(emg.getSignalData());
+            System.out.println(acc.getSignalData());
+            signals = new Signals(acc, emg);
+            saveDataToFile(this.getName(), acc, emg); //save info in a txt file
+
+        } catch (BITalinoException ex) {
+            Logger.getLogger(BitalinoDemo.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Throwable ex) {
+            Logger.getLogger(BitalinoDemo.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            try {
+                //close bluetooth connection
+                if (bitalino != null) {
+                    bitalino.close();
+                }
+            } catch (BITalinoException ex) {
+                Logger.getLogger(BitalinoDemo.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        return signals;
+    }
+
+    //TODO: should we save age, weight and height?
+    private void saveDataToFile(String patientName, ACC acc, EMG emg) {
+        LocalDateTime moment = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss");
+        String timestamp = moment.format(formatter);
+
+        Path folderPath = Paths.get("BITalinoData");
+        try {
+            Files.createDirectories(folderPath);
+        } catch (IOException e) {
+            Logger.getLogger(BitalinoDemo.class.getName()).log(Level.SEVERE, "Error creating directory", e);
+        }
+
+        String fileName = "BITalinoData/" + patientName + "_" + timestamp + ".txt";
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName))) {
+            writer.write("Patient Name: " + patientName + "\n");
+            writer.write("Date and Time: " + moment + "\n\n");
+
+            writer.write("EMG Data:\n");
+            for (int i = 0; i < emg.getSignalData().size(); i++) {
+                writer.write("Time: " + emg.getTimestamp().get(i) + ", Signal: " + emg.getSignalData().get(i) + "\n");
+            }
+
+            writer.write("\nACC Data:\n");
+            for (int i = 0; i < acc.getSignalData().size(); i++) {
+                writer.write("Time: " + acc.getTimestamp().get(i) + ", Signal: " + acc.getSignalData().get(i) + "\n");
+            }
+
+            System.out.println("Data saved to " + fileName);
+        } catch (IOException e) {
+            Logger.getLogger(BitalinoDemo.class.getName()).log(Level.SEVERE, "Error writing file", e);
+        }
+    }
 
     private MedicalRecord askData() {
         Scanner sc = new Scanner(System.in);
@@ -123,13 +225,44 @@ public class Patient implements Runnable{
         return new MedicalRecord(age, weight, height, symptoms);
     }
 
-    private MedicalRecord chooseMR(){
-        MedicalRecord mr = this.getMedicalRecords().get(0);
-        return mr;
+    //choosing Medical Record
+    private MedicalRecord chooseMR() {
+        if (this.medicalRecords.isEmpty()) {
+            System.out.println("No medical records available.");
+            return null;
+        }
+
+        Scanner sc = new Scanner(System.in);
+        System.out.println("Available Medical Records:");
+
+        // Display medical records with indices
+        for (int i = 0; i < this.medicalRecords.size(); i++) {
+            System.out.println((i + 1) + ": " + this.medicalRecords.get(i)); // using toString of MedicalRecord class
+        }
+
+        int choice;
+        while (true) {
+            try {
+                System.out.print("Enter the number of the medical record you want to choose: ");
+                choice = sc.nextInt();
+                if (choice > 0 && choice <= medicalRecords.size()) {
+                    break;
+                } else {
+                    System.out.println("Invalid choice. Please enter a number between 1 and " + medicalRecords.size());
+                }
+            } catch (InputMismatchException e) {
+                System.out.println("Invalid input. Please enter a numeric value.");
+                sc.next(); // Clear the invalid input
+            }
+        }
+        sc.close();
+        // Return the selected medical record
+        return medicalRecords.get(choice-1);
     }
 
-    private void sendMedicalRecord(MedicalRecord medicalRecord, Socket socket) throws IOException {
-        //TODO send info, CHECK
+
+    /*public void sendMedicalRecord(MedicalRecord medicalRecord, Socket socket) throws IOException {
+
         PrintWriter printWriter = new PrintWriter(socket.getOutputStream(), true);
         System.out.println("Connection established... sending text");
         printWriter.println(medicalRecord.getPatientName());
@@ -151,31 +284,59 @@ public class Patient implements Runnable{
         printWriter.println(emg);
         printWriter.println(medicalRecord.getGenetic_background());//boolean
         //releaseSendingResources(printWriter, socket);
+    }*/
+
+    /*public void sendMedicalRecord(MedicalRecord medicalRecord, Socket socket) throws IOException {
+        PrintWriter printWriter = new PrintWriter(socket.getOutputStream(), true);
+
+        // Collection of fields into a list
+        List<String> fields = new ArrayList<>();
+        fields.add(medicalRecord.getPatientName());
+        fields.add(medicalRecord.getPatientSurname());
+        fields.add(String.valueOf(medicalRecord.getAge()));
+        fields.add(String.valueOf(medicalRecord.getWeight()));
+        fields.add(String.valueOf(medicalRecord.getHeight()));
+
+        // Add symptoms
+        fields.add(joinWithCommas(medicalRecord.getSymptoms()));
+
+        // Add signal data
+        fields.add(joinIntegersWithCommas(medicalRecord.getAcceleration().getTimestamp()));
+        fields.add(joinIntegersWithCommas(medicalRecord.getAcceleration().getSignalData()));
+        fields.add(joinIntegersWithCommas(medicalRecord.getEmg().getSignalData()));
+
+        // Add genetic background
+        fields.add(String.valueOf(medicalRecord.getGenetic_background()));
+
+        // Serializing and sending the record
+        String recordString = joinWithCommas(fields);
+        printWriter.println(recordString);
+
+        System.out.println("Medical record sent successfully: " + recordString);
     }
+
 
     public static String joinWithCommas(List<String> list) {
         return String.join(",", list);
     }
+
     public static String joinIntegersWithCommas(List<Integer> list) {
-        return list.stream()
-                .map(String::valueOf) // Convert Integer to String
-                .collect(Collectors.joining(","));
+        return list.stream().map(String::valueOf) // Convert Integer to String
+                .collect(Collectors.joining(",")); // commas
     }
 
-
-
-    private DoctorsNote receiveDoctorsNote()throws IOException {
+    private DoctorsNote receiveDoctorsNote(MedicalRecord medicalRecord) throws IOException {
         //TODO check this one
         DoctorsNote doctorsNote = null;
         try (ServerSocket serverSocket = new ServerSocket(9009)) {  // Puerto 9009 para coincidir con el cliente
-            System.out.println("Server started, waiting for client...");
+            System.out.println("Server started, waiting for client, waiting for the Doctor Notes...");
 
             try (Socket socket = serverSocket.accept();
                  BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()))) {
 
-                System.out.println("Client connected. Receiving data...");
+                System.out.println("Client connected. Receiving doctor's note...");
 
-                // Read each line
+                // Read/ print each line doctor's data
                 String doctorName = bufferedReader.readLine();
                 System.out.println(doctorName);
                 String doctorSurname = bufferedReader.readLine();
@@ -186,10 +347,10 @@ public class Patient implements Runnable{
                 releaseReceivingResources(bufferedReader, socket, serverSocket);
 
                 doctorsNote = new DoctorsNote(doctorName, doctorSurname, notes);
-                //TODO meter esto en lista doctor
+                medicalRecord.getDoctorsNotes().add(doctorsNote);
                 //TODO this is in the main
                 //DoctorsNote doctorsNote = createDoctorsNote(medicalRecord);
-                //medicalRecord.getDoctorsNotes().add(doctorsNote);
+
                 return doctorsNote;
             }
         } catch (Exception e) {
@@ -198,7 +359,8 @@ public class Patient implements Runnable{
         return doctorsNote;
     }
 
-    private static void releaseReceivingResources(BufferedReader bufferedReader, Socket socket, ServerSocket socketServidor) {
+    private static void releaseReceivingResources(BufferedReader bufferedReader,
+                                                  Socket socket, ServerSocket socketServidor) {
         try {
             bufferedReader.close();
         } catch (IOException ex) {
@@ -216,25 +378,92 @@ public class Patient implements Runnable{
         } catch (IOException ex) {
             Logger.getLogger(Doctor.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }*/
+
+    private void seeDoctorNotes(MedicalRecord medicalRecord) {
+        List<DoctorsNote> notes=medicalRecord.getDoctorsNotes();
+
+        if(notes.isEmpty()){
+            System.out.println("There is not doctor notes available for this Medical Record.");
+            return;
+        }
+        System.out.println("Doctor notes in this medical record");
+        for(int i=0; i<notes.size();i++){
+            System.out.println((i + 1)+ ": "+notes.get(i).getNotes());
+        }
     }
 
-    private void seeDoctorsNotes() {
-        //TODO here the patient chooses what record they want to see
+    public String toString(){
+        return "Patient --> " +
+                "Name: "+ this.name + " " +
+                "Surname: "+ this.surname+ " "+
+                "Genetic background: "+ this.genetic_background+
+                " ";
     }
+
+
+
+
+
 
     /*public static void main(String[] args) throws IOException {
         Patient p = new Patient("a", "a", Boolean.TRUE);
         p.openRecord();
-        for (int i=0; i<p.getMedicalRecords().size();i++){
+        /*for (int i=0; i<p.getMedicalRecords().size();i++){
             System.out.println(p.getMedicalRecords().get(i));
         }
         MedicalRecord mr = p.chooseMR();
-        //p.sendMedicalRecord(mr);
-        p.receiveDoctorsNote();
+        p.sendMedicalRecord(mr);
     }*/
 
-    @Override
-    public void run() {
 
+    /*public static void main(String[] args) {
+        // Start a mock server in a new thread
+        new Thread(() -> startMockServer()).start();
+
+        // Delay waiting to the Server
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        // Test the sendMedicalRecord method
+        try (Socket socket = new Socket("localhost", 9000)) {
+            // Create  MedicalRecord data
+            MedicalRecord record = new MedicalRecord(
+                    "Ana", "Losada", 23, 60, 170,
+                    Arrays.asList("Tremor", "Fatigue"),
+                    new ACC(Arrays.asList(1, 2, 3), Arrays.asList(10, 20, 30)),
+                    new EMG(Arrays.asList(4, 5, 6), Arrays.asList(10, 20, 30)),
+                    true
+            );
+
+            //Patient instance and test the method
+            Patient patient = new Patient("Ana", "Losada", true);
+            patient.sendMedicalRecord(record, socket);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
+
+    // Mock server to test the function
+    private static void startMockServer() {
+        try (ServerSocket serverSocket = new ServerSocket(9000)) {
+            System.out.println("Mock server started, waiting for connection...");
+            try (Socket clientSocket = serverSocket.accept();
+                 BufferedReader reader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()))) {
+
+                System.out.println("Client connected. Receiving data...");
+                String receivedData;
+                while ((receivedData = reader.readLine()) != null) {
+                    System.out.println("Received: " + receivedData);
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+
+        }
+    }*/
 }
