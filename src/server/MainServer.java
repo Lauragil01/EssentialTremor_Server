@@ -1,6 +1,7 @@
 package server;
 
 import pojos.*;
+import services.DoctorService;
 import services.PatientService;
 import utils.CsvHandler;
 import utils.PasswordHash;
@@ -14,14 +15,6 @@ import java.util.List;
 import java.util.Scanner;
 
 public class MainServer {
-
-    private static boolean control;
-    private static Scanner sc = new Scanner(System.in);
-    private static Doctor doctor;
-    private static ServerSocket serverSocket;
-    private static Socket clientSocket;
-    private static PrintWriter printWriter;
-    private static BufferedReader bufferedReader;
 
     /*public static void main(String[] args) {
         serverSocket = null;
@@ -105,20 +98,30 @@ public class MainServer {
         private static final int PORT = 12345;
 
         public static void main(String[] args) {
+            Doctor doctor=new Doctor("Virtual Doctor", " ");
+            boolean running=true;
+
             try (ServerSocket serverSocket = new ServerSocket(PORT)) {
                 System.out.println("Server is running on port " + PORT + "...");
+                System.out.println("Waiting for clients...");
 
-                while (true) {
-                    System.out.println("Waiting for clients...");
-                    Socket clientSocket = serverSocket.accept();
-                    System.out.println("Client connected.");
+                while (running) {
+                    try {
+                        Socket clientSocket = serverSocket.accept();
+                        System.out.println("Client connected.");
 
-                    ClientHandler clientHandler = new ClientHandler(clientSocket);
-                    Thread thread = new Thread(clientHandler);
-                    thread.start();
+                        ClientHandler clientHandler = new ClientHandler(clientSocket, doctor);
+                        Thread thread = new Thread(clientHandler);
+                        thread.start();
+                    } catch (IOException e) {
+                        System.err.println("Error client connection: " + e.getMessage());
+                        running = false;
+                    }
                 }
-            } catch (IOException e) {
-                System.err.println("Error starting server: " + e.getMessage());
+            }catch(IOException ex){
+                System.out.println("Error starting server: "+ ex.getMessage());
+            }finally{
+                System.out.println("Server stopped");
             }
         }
 
@@ -135,20 +138,10 @@ public class MainServer {
         }
     }
 
-    private static void listAllPatients() {
-        try {
-            List<String[]> patients = CsvHandler.readFromCsv(PatientService.FILE_PATH);
-            System.out.println("\n--- Registered Patients ---");
-            for (String[] patient : patients) {
-                System.out.println(String.join(", ", patient));
-            }
-        } catch (Exception e) {
-            System.err.println("Error reading patient data: " + e.getMessage());
-        }
-    }
 
 
-    private static void showServerMenu(ServerSocket serverSocket) {
+
+   /* private static void showServerMenu(ServerSocket serverSocket) {
         System.out.println("\n@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
         System.out.println("@@                                                                  @@");
         System.out.println("@@                       Server Administration Menu                 @@");
@@ -187,7 +180,7 @@ public class MainServer {
 
 
     //TODO: REVISIÓN METODO
-    public static void menuUser(User u) throws IOException, SQLException {
+    public static void menuUser(User u) throws IOException {
         int option;
         MedicalRecord mr = null;
         Doctor doctor = null;
@@ -240,7 +233,7 @@ public class MainServer {
         System.out.println("@@                                                                  @@");
         System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
         System.out.print("\nSelect an option: ");
-    }
+    }*/
 
     /*public static DoctorsNote chooseToDoDoctorNotes(MedicalRecord mr) {
         System.out.println("\nDo you want to create a doctors note? (y/n)");
@@ -258,16 +251,7 @@ public class MainServer {
         return dn;
     }
 */
-    public static void chooseToSendDoctorNotes(DoctorsNote dn) throws IOException {
-        System.out.println("\nDo you want to send a doctors note? (y/n)");
-        String option = sc.nextLine();
-        if (option.equalsIgnoreCase("y")) {
-            doctor.sendDoctorsNote(dn, clientSocket, printWriter);
-        } else if (!option.equalsIgnoreCase("y") || option.equalsIgnoreCase("n")) {
-            System.out.println("Not a valid option, try again...");
-            chooseToSendDoctorNotes(dn);
-        }
-    }
+
 
 
 

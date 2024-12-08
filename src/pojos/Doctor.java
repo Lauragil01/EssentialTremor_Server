@@ -2,8 +2,10 @@ package pojos;
 
 
 
+import services.PatientService;
 import signals.ACC;
 import signals.EMG;
+import utils.CsvHandler;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -14,7 +16,7 @@ import java.util.stream.Collectors;
 
 public class Doctor {
 
-    private User user;
+    //private User user;
     private String name;
     private String surname;
     private List<Patient> patients;
@@ -22,13 +24,6 @@ public class Doctor {
     private List<DoctorsNote> doctorsNotes;
 
 
-    public Doctor(String name, String surname, List<Patient> patients) {
-        this.name = name;
-        this.surname = surname;
-        this.patients = patients;
-        this.medicalRecords = new ArrayList<>();
-        this.doctorsNotes = new ArrayList<>();
-    }
 
     public Doctor(String name, String surname) {
         this.name = name;
@@ -37,14 +32,33 @@ public class Doctor {
         this.medicalRecords = new ArrayList<>();
         this.doctorsNotes = new ArrayList<>();
     }
-
-    @Override
-    public String toString() {
-        return "Doctor{" +
-                "name='" + name + '\'' +
-                ", surname='" + surname + '\''+
-                '}';
+    public Doctor(String name, String surname, List<Patient> patients) {
+        this.name = name;
+        this.surname = surname;
+        this.patients = patients;
+        this.medicalRecords = new ArrayList<>();
+        this.doctorsNotes = new ArrayList<>();
     }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getSurname() {
+        return surname;
+    }
+
+    public void setSurname(String surname) {
+        this.surname = surname;
+    }
+    public List<Patient> getPatients() {
+        return patients;
+    }
+
 
     public List<MedicalRecord> getMedicalRecords() {
         return medicalRecords;
@@ -62,13 +76,20 @@ public class Doctor {
         this.doctorsNotes = doctorsNotes;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void addPatient(Patient patient) {
+        this.patients.add(patient);
+    }
+    @Override
+    public String toString() {
+        return "Doctor{" +
+                "name='" + name + '\'' +
+                ", surname='" + surname + '\''+
+                '}';
     }
 
-    public void setSurname(String surname) {
-        this.surname = surname;
-    }
+
+    //TODO:-------------------------revisar---------------------
+
 
     @Override
     public boolean equals(Object o) {
@@ -87,17 +108,9 @@ public class Doctor {
         this.patients = patients;
     }
 
-    public String getName() {
-        return name;
-    }
 
-    public String getSurname() {
-        return surname;
-    }
 
-    public List<Patient> getPatients() {
-        return patients;
-    }
+
 
     private Patient choosePatient() {
         Scanner sc = new Scanner(System.in);
@@ -110,6 +123,17 @@ public class Doctor {
         int number = sc.nextInt();
         sc.close();
         return listOfPatients.get(number - 1);
+    }
+    private static void listAllPatients() {
+        try {
+            List<String[]> patients = CsvHandler.readFromCsv(PatientService.FILE_PATH);
+            System.out.println("\n--- Registered Patients ---");
+            for (String[] patient : patients) {
+                System.out.println(String.join(", ", patient));
+            }
+        } catch (Exception e) {
+            System.err.println("Error reading patient data: " + e.getMessage());
+        }
     }
 
     public MedicalRecord receiveMedicalRecord(Socket socket, BufferedReader bufferedReader) throws IOException {
@@ -229,6 +253,17 @@ public class Doctor {
         printWriter.println(getSurname());
         printWriter.println(doctorsNote.getNotes());
     }
+    //TODO: chooseToSendDoctorNotes
+    /*public void chooseToSendDoctorNotes(DoctorsNote dn) throws IOException {
+        System.out.println("\nDo you want to send a doctors note? (y/n)");
+        String option = sc.nextLine();
+        if (option.equalsIgnoreCase("y")) {
+            sendDoctorsNote(dn, clientSocket, printWriter);
+        } else if (!option.equalsIgnoreCase("y") || option.equalsIgnoreCase("n")) {
+            System.out.println("Not a valid option, try again...");
+            chooseToSendDoctorNotes(dn);
+        }
+    }*/
 
     private void addPatient(){
         Scanner sc = new Scanner(System.in);

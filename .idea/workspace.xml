@@ -5,53 +5,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="cf5eb29e-ec59-48b6-ac09-bd3496151015" name="Changes" comment="changes">
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/lib.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/Doctor.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/MedicalRecord.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/Patient.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/Treatment.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/User.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/acc_signals.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/emg_signals.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/sqlite_sequence.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/state.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/jfreechart-1.0.19.jar" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/server/ClientHandler.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/server/MainServer.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/services/DoctorService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/services/MedicalRecordService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/services/PatientService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/utils/CsvHandler.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/utils/PasswordHash.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/EssenetialTremor_Server.iml" beforeDir="false" afterPath="$PROJECT_DIR$/EssenetialTremor_Server.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Data/ACC.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/signals/ACC.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Data/Data.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/signals/Signals.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Data/EMG.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/signals/EMG.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/iFaces/DoctorManager.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/iFaces/DoctorNotes.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/iFaces/InterfaceConnectionManager.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/iFaces/MedicalRecordManager.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/iFaces/PatientManager.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/iFaces/SignalManager.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/iFaces/StateManager.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/iFaces/TreatmentManager.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/iFaces/UserManager.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/jdbc/ConnectionManager.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/jdbc/JDBCDoctorManager.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/jdbc/JDBCDoctorNotes.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/jdbc/JDBCMedicalRecordManager.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/jdbc/JDBCPatientManager.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/jdbc/JDBCSignalManager.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/jdbc/JDBCStateManager.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/jdbc/JDBCTreatmentManager.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/jdbc/JDBCUserManager.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/mainServer/MainServer.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/Patient.csv" beforeDir="false" afterPath="$PROJECT_DIR$/data/Patient.csv" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/pojos/Doctor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/pojos/Doctor.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/pojos/DoctorsNote.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/pojos/DoctorsNote.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/pojos/MedicalRecord.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/pojos/MedicalRecord.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/pojos/Patient.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/pojos/Patient.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/pojos/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/pojos/User.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/server/ClientHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/server/ClientHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/server/MainServer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/server/MainServer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/services/PatientService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/services/PatientService.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -250,7 +209,14 @@
       <option name="project" value="LOCAL" />
       <updated>1730745680179</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="changes">
+      <created>1733649907860</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1733649907861</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

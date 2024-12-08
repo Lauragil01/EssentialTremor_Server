@@ -1,5 +1,6 @@
 package server;
 
+import pojos.Doctor;
 import pojos.Patient;
 import pojos.User;
 import services.PatientService;
@@ -12,13 +13,15 @@ import java.util.logging.Logger;
 
 
 public class ClientHandler implements Runnable{
-        private Socket clientSocket;
+        private final Socket clientSocket;
         private  BufferedReader bufferedReader;
         private  PrintWriter printWriter;
         private InputStream inputStream;
+        private Doctor doctor;
 
-        public ClientHandler(Socket clientSocket) {
+        public ClientHandler(Socket clientSocket, Doctor doctor) {
             this.clientSocket = clientSocket;
+            this.doctor=doctor;
         }
 
         @Override
@@ -44,64 +47,47 @@ public class ClientHandler implements Runnable{
             } catch (IOException e) {
                 System.err.println("Error handling client: " + e.getMessage());
             } finally {
-                releaseResources(inputStream,clientSocket);
+                releaseResources();
             }
         }
-    private void releaseResources(InputStream inputStream, Socket socket) {
+    private void releaseResources() {
         try {
-            if (inputStream != null) inputStream.close();
-        } catch (IOException ex) {
-            Logger.getLogger(ClientHandler.class.getName()).log(Level.SEVERE, "Error closing InputStream", ex);
-        }
-        try {
-            if (socket != null && !socket.isClosed()) socket.close();
-        } catch (IOException ex) {
-            Logger.getLogger(ClientHandler.class.getName()).log(Level.SEVERE, "Error closing Socket", ex);
+            if (bufferedReader != null) bufferedReader.close();
+            if (printWriter != null) printWriter.close();
+            if (clientSocket != null && !clientSocket.isClosed()) clientSocket.close();
+        } catch (IOException e) {
+            Logger.getLogger(ClientHandler.class.getName()).log(Level.SEVERE, "Error releasing resources", e);
         }
     }
 
 
     //log in patient--> processing data sent
-    public void processLoginPatient(String loginData) throws  IOException{
-        // Los datos del cliente llegan en formato: "username|password"
-        if(loginData==null || !loginData.contains("|")){
-            printWriter.println("Error invalid log in format");
-        }
-        System.out.println("received login data" +loginData);
-
+    private void processLoginPatient(String loginData) {
         String[] parts = loginData.split("\\|");
 
-        // validation format
         if (parts.length != 2) {
             printWriter.println("ERROR|Invalid login format. Use 'username|password'");
             return;
         }
 
-        String username = parts[0].trim();
-        String password = parts[1].trim();
+        String username = parts[0];
+        String password = parts[1];
 
         try {
-
-            // Validar las credenciales usando PatientService
-            boolean exits = PatientService.isUsernameTaken(username);
-
-            if (!exits) {
-                printWriter.println("ERROR|Username does not exist.Please register first. ");
+            if (!PatientService.isUsernameTaken(username)) {
+                printWriter.println("ERROR|Username does not exist. Please register first.");
                 return;
             }
-            // Hashear la contraseña antes de validarla
+
             String hashedPassword = PasswordHash.hashPassword(password);
-            Boolean isValid=PatientService.validatePatient(username, hashedPassword);
-
-            if(isValid){
-                printWriter.println("SUCCESS| Login successful. Welcome "+username);
-            }else{
-                printWriter.println("ERROR| Invalid password. Please try again.");
+            if (PatientService.validatePatient(username, hashedPassword)) {
+                printWriter.println("SUCCESS|Login successful. Welcome, " + username + "!");
+            } else {
+                printWriter.println("ERROR|Invalid password. Please try again.");
             }
-
         } catch (Exception e) {
             printWriter.println("ERROR|An unexpected error occurred: " + e.getMessage());
-            System.out.println("Error during patient login: " + e.getMessage());
+            System.err.println("Error during patient login: " + e.getMessage());
         }
     }
 
@@ -121,7 +107,7 @@ public class ClientHandler implements Runnable{
             try {
                 // Unique user
                 if (PatientService.isUsernameTaken(username)) {
-                    System.out.println("Error: Username already exists.");
+                    printWriter.println("Error: Username already exists.");
                     return;
                 }
                 // Hash password
@@ -135,13 +121,14 @@ public class ClientHandler implements Runnable{
                 patient.setGenetic_background(geneticBackground);
                 // save patient in CSV
                 PatientService.savePatient(patient);
+                printWriter.println("SUCCESS| Patient registered successfully: " + patient.getUser());
 
-                System.out.println("Patient registered successfully: " + patient.getUser());
             } catch (Exception e) {
-                System.err.println("Error processing patient data: " + e.getMessage());
+                printWriter.println("ERROR|Failed to register patient:  " + e.getMessage());
+                System.out.println("Error processing patient data: "+e.getMessage());
             }
         } else {
-            System.err.println("Error: Incorrect data format or missing fields.");
+            printWriter.println("ERROR|Incorrect data format or missing fields.");
         }
     }
 

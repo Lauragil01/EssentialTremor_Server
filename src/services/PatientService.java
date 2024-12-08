@@ -37,7 +37,7 @@ public class PatientService {
                 String.valueOf(patient.getGenetic_background()));
 
         CsvHandler.writeToCsv(FILE_PATH, patientData);
-        System.out.println("Patient saved to Patient.csv: " );
+        System.out.println("Patient saved to Patient.csv " );
     }
 
 
