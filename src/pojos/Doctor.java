@@ -23,7 +23,9 @@ public class Doctor {
     private List<MedicalRecord> medicalRecords;
     private List<DoctorsNote> doctorsNotes;
 
+    public Doctor(){
 
+    }
 
     public Doctor(String name, String surname) {
         this.name = name;
@@ -107,9 +109,6 @@ public class Doctor {
     public void setPatients(List<Patient> patients) {
         this.patients = patients;
     }
-
-
-
 
 
     private Patient choosePatient() {
@@ -293,6 +292,32 @@ public class Doctor {
         sc.close();
     }
 
+    public DoctorsNote generateDoctorsNote(MedicalRecord medicalRecord) {
+        StringBuilder note = new StringBuilder();
+        note.append("Patient ").append(medicalRecord.getPatientName()).append(" ")
+                .append(medicalRecord.getPatientSurname()).append(" exhibits symptoms: ")
+                .append(String.join(", ", medicalRecord.getSymptoms()));
+
+        DoctorsNote doctorsNote = new DoctorsNote(note.toString());
+        this.doctorsNotes.add(doctorsNote); // Add to doctor's list
+        medicalRecord.getDoctorsNotes().add(doctorsNote); // Add to the record
+        return doctorsNote;
+    }
+
+    // Prescribe treatment based on symptoms
+    public Treatment prescribeTreatment(MedicalRecord medicalRecord) {
+        List<String> symptoms = medicalRecord.getSymptoms();
+        if (symptoms.contains("Tremor")) {
+            return Treatment.PROPRANOLOL;
+        } else if (symptoms.contains("Severe Pain")) {
+            return Treatment.PRIMIDONE;
+        } else {
+            return Treatment.SURGERY;
+        }
+    }
+    public String serializeDoctorsResponse(DoctorsNote note, Treatment treatment) {
+        return "Doctor's Note: " + note.getNotes() + "\nTreatment: " + treatment.getDescription();
+    }
 
     /*public static void main(String[] args) throws IOException {
         List<Patient> list = null;

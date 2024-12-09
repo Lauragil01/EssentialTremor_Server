@@ -1,6 +1,8 @@
 package services;
 
+import pojos.DoctorsNote;
 import pojos.MedicalRecord;
+import pojos.Treatment;
 import utils.CsvHandler;
 
 import java.util.ArrayList;
@@ -45,5 +47,24 @@ public class MedicalRecordService {
         }
         return records;
     }
+
+    public static void saveMedicalRecord(MedicalRecord record, DoctorsNote note, Treatment treatment) {
+        List<String> data = Arrays.asList(
+                record.getPatientName(),
+                record.getPatientSurname(),
+                String.valueOf(record.getAge()),
+                String.valueOf(record.getWeight()),
+                String.valueOf(record.getHeight()),
+                String.join(",", record.getSymptoms()),
+                record.getAcc().toString(),
+                record.getEmg().toString(),
+                note.getNotes(),
+                treatment.getDescription()
+        );
+
+        CsvHandler.writeToCsv(FILE_PATH, data);
+    }
+
+
 }
 

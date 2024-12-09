@@ -1,6 +1,7 @@
 package services;
 
 import pojos.Patient;
+import pojos.User;
 import utils.CsvHandler;
 
 import java.util.ArrayList;
@@ -66,6 +67,27 @@ public class PatientService {
         }
         return false;//not found
     }
+
+    public static Patient getPatientByUsername(String username) {
+        List<String[]> patients = CsvHandler.readFromCsv(FILE_PATH);
+
+        for (String[] patientData : patients) {
+            if (patientData.length >= 5 && patientData[0].equals(username)) {
+                // Crear un objeto Patient a partir de los datos del CSV
+                String password = patientData[1]; // Aunque no sea necesario aquí, está incluido
+                String name = patientData[2];
+                String surname = patientData[3];
+                boolean geneticBackground = Boolean.parseBoolean(patientData[4]);
+
+                // Retornar el objeto Patient
+                return new Patient(name, surname, geneticBackground, new User(username, password));
+            }
+        }
+
+        // Si no se encuentra, devolver null
+        return null;
+    }
+
 
 }
 

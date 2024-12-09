@@ -72,17 +72,26 @@ public class MedicalRecord {
         return patientSurname;
     }
 
+
     public void setPatientSurname(String patientSurname) {
         this.patientSurname = patientSurname;
     }
 
-    /*public void setAcceleration(ACC acceleration) {
+
+    public ACC getAcc(){
+        return acceleration;
+    }
+    public void setAcceleration(ACC acceleration) {
         this.acceleration = acceleration;
+    }
+
+    public EMG getEmg() {
+        return emg;
     }
 
     public void setEmg(EMG emg) {
         this.emg = emg;
-    }*/
+    }
 
     public int getAge() {
         return age;
@@ -108,14 +117,20 @@ public class MedicalRecord {
         //return emg;
     }*/
 
-    public MedicalRecord(int age, double weight, int height, List<String> symptoms) {
+    public MedicalRecord(int age, double weight, int height, List<String> symptoms,ACC accSignal, EMG emgSignal, boolean geneticBackground, String patientName, String patientSurname) {
         this.age = age;
         this.weight = weight;
         this.height = height;
         this.symptoms = symptoms;
-        this.doctors = new ArrayList<>();
+        this.acceleration=accSignal;
+        this.emg=emgSignal;
+        this.genetic_background=geneticBackground;
+        this.patientName=patientName;
+        this.patientSurname=patientSurname;
         this.doctorsNotes = new ArrayList<>();
+
     }
+
     public MedicalRecord(String patientName, String patientSurname, int age, double weight, int height, List<String> symptoms, Boolean genetic_background) {
         this.patientName = patientName;
         this.patientSurname = patientSurname;
@@ -123,10 +138,9 @@ public class MedicalRecord {
         this.weight = weight;
         this.height = height;
         this.symptoms = symptoms;
-        /*this.acceleration = acceleration;
-        this.emg = emg;*/
+        this.acceleration = acceleration;
+        this.emg = emg;
         this.genetic_background = genetic_background;
-        this.doctors = new ArrayList<>();
         this.doctorsNotes = new ArrayList<>();
     }
     public MedicalRecord(String patientName, String patientSurname, int age, double weight, int height,Boolean geneticBackground, List<String> symptoms) {

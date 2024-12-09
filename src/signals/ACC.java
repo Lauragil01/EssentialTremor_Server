@@ -25,6 +25,8 @@ public class ACC {
         }
 
 
+
+
     public ACC(List<Integer> signalData, List<Integer> timestamp) {
         this.signalData = signalData;
         this.timestamp = timestamp;

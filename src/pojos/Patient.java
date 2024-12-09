@@ -23,6 +23,12 @@ public class Patient {
         this.medicalRecords = new ArrayList<MedicalRecord>();
         //this.doctors = new ArrayList<Doctor>();
     }
+    public Patient (String name, String surname, boolean geneticBackground,  User user){
+        this.name=name;
+        this.surname= surname;
+        this.genetic_background=geneticBackground;
+        this.user=user;
+    }
 
     /*public void setMedicalRecords(List<MedicalRecord> medicalRecords) {
         this.medicalRecords = medicalRecords;

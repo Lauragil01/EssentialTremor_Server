@@ -1,15 +1,19 @@
 package server;
 
-import pojos.Doctor;
-import pojos.Patient;
-import pojos.User;
+import pojos.*;
+import services.MedicalRecordService;
 import services.PatientService;
+import signals.ACC;
+import signals.EMG;
 import utils.PasswordHash;
 
 import java.io.*;
 import java.net.Socket;
+import java.util.Arrays;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 
 public class ClientHandler implements Runnable{
@@ -17,7 +21,7 @@ public class ClientHandler implements Runnable{
         private  BufferedReader bufferedReader;
         private  PrintWriter printWriter;
         private InputStream inputStream;
-        private Doctor doctor;
+        private final Doctor doctor;
 
         public ClientHandler(Socket clientSocket, Doctor doctor) {
             this.clientSocket = clientSocket;
@@ -36,10 +40,10 @@ public class ClientHandler implements Runnable{
                 while ((clientRequest = bufferedReader.readLine()) != null) {
                     System.out.println("Received request: " + clientRequest);
 
-                    if (clientRequest.startsWith("REGISTER_PATIENT")) {
-                        processPatientData(clientRequest);
-                    } else if (clientRequest.startsWith("LOGIN_PATIENT")) {
-                        processLoginPatient(clientRequest);
+                    if (clientRequest.startsWith("REGISTER_PATIENT|")) {
+                        processPatientData(clientRequest, printWriter);
+                    } else if (clientRequest.startsWith("LOGIN|")) {
+                        processLoginPatient(clientRequest, printWriter);
                     } else {
                         printWriter.println("ERROR|Unknown request type.");
                     }
@@ -62,37 +66,54 @@ public class ClientHandler implements Runnable{
 
 
     //log in patient--> processing data sent
-    private void processLoginPatient(String loginData) {
+    private void processLoginPatient(String loginData, PrintWriter writer) {
         String[] parts = loginData.split("\\|");
 
-        if (parts.length != 2) {
-            printWriter.println("ERROR|Invalid login format. Use 'username|password'");
+        //for(String p:parts){
+           // System.out.println(p+ " ");
+        //}
+
+        if (parts.length != 3) {
+            writer.println("ERROR|Invalid login format. Use 'username|password'");
             return;
         }
 
-        String username = parts[0];
-        String password = parts[1];
+        String username = parts[1];
+        String password = parts[2];
 
         try {
             if (!PatientService.isUsernameTaken(username)) {
-                printWriter.println("ERROR|Username does not exist. Please register first.");
+                writer.println("ERROR|Username does not exist. Please register first.");
                 return;
             }
 
             String hashedPassword = PasswordHash.hashPassword(password);
             if (PatientService.validatePatient(username, hashedPassword)) {
-                printWriter.println("SUCCESS|Login successful. Welcome, " + username + "!");
+                Patient patient = PatientService.getPatientByUsername(username);
+                writer.println("SUCCESS|Login successful. Welcome, " + username + "!");
+                if (patient != null) {
+                    // Serialize patient data to send back to the client
+                    String patientData = serializePatient(patient);
+                    writer.println(" --> " + patientData);
+                    return;
+                }
             } else {
-                printWriter.println("ERROR|Invalid password. Please try again.");
+                writer.println("ERROR|Invalid password. Please try again.");
             }
         } catch (Exception e) {
-            printWriter.println("ERROR|An unexpected error occurred: " + e.getMessage());
-            System.err.println("Error during patient login: " + e.getMessage());
+            writer.println("ERROR|An unexpected error occurred: " + e.getMessage());
+            System.out.println("Error during patient login: " + e.getMessage());
         }
+    }
+    private String serializePatient(Patient patient) {
+        return patient.getUser().getUsername() + "|" +
+                patient.getName() + "|" +
+                patient.getSurname() + "|" +
+                patient.getGenetic_background();
     }
 
     //reception of data of the patient's REGISTRATION and write them in csvFile
-    public void processPatientData(String patientData) {
+    public void processPatientData(String patientData, PrintWriter writer) {
         // Format data of the client:
         // "REGISTER_PATIENT|username|password|name|surname|geneticBackground"
         String[] data = patientData.split("\\|");
@@ -107,7 +128,7 @@ public class ClientHandler implements Runnable{
             try {
                 // Unique user
                 if (PatientService.isUsernameTaken(username)) {
-                    printWriter.println("Error: Username already exists.");
+                    writer.println("Error: Username already exists.");
                     return;
                 }
                 // Hash password
@@ -121,16 +142,93 @@ public class ClientHandler implements Runnable{
                 patient.setGenetic_background(geneticBackground);
                 // save patient in CSV
                 PatientService.savePatient(patient);
-                printWriter.println("SUCCESS| Patient registered successfully: " + patient.getUser());
+                writer.println("SUCCESS| Patient registered successfully: " + patient.getUser());
 
             } catch (Exception e) {
-                printWriter.println("ERROR|Failed to register patient:  " + e.getMessage());
+                writer.println("ERROR|Failed to register patient:  " + e.getMessage());
                 System.out.println("Error processing patient data: "+e.getMessage());
             }
         } else {
-            printWriter.println("ERROR|Incorrect data format or missing fields.");
+            writer.println("ERROR|Incorrect data format or missing fields.");
         }
     }
+
+    private void processMedicalRecord(String medicalRecordData) {
+        try {
+            // Deserializar el registro médico
+            MedicalRecord medicalRecord = deserializeMedicalRecord(medicalRecordData);
+
+            if (medicalRecord == null) {
+                printWriter.println("ERROR|Invalid medical record data.");
+                return;
+            }
+
+            // Procesar el registro médico con el Doctor
+            Doctor doctor = new Doctor();
+            DoctorsNote note = doctor.generateDoctorsNote(medicalRecord);
+            Treatment treatment = doctor.prescribeTreatment(medicalRecord);
+
+            // Guardar los datos en el archivo CSV
+            MedicalRecordService.saveMedicalRecord(medicalRecord, note, treatment);
+
+            // Responder al cliente con las notas y tratamiento
+            String response = serializeDoctorsResponse(note, treatment);
+            printWriter.println("SUCCESS|" + response);
+        } catch (Exception e) {
+            printWriter.println("ERROR|An error occurred while processing the medical record.");
+            System.err.println("Error processing medical record: " + e.getMessage());
+        }
+    }
+
+    private MedicalRecord deserializeMedicalRecord(String data) {
+        try {
+            String[] fields = data.split("\\|");
+
+            if (fields.length < 9) {
+                return null; // Validar que haya suficientes campos
+            }
+
+            // Datos básicos del paciente
+            String patientName = fields[0];
+            String patientSurname = fields[1];
+            int age = Integer.parseInt(fields[2]);
+            double weight = Double.parseDouble(fields[3]);
+            int height = Integer.parseInt(fields[4]);
+            List<String> symptoms = Arrays.asList(fields[5].split(","));
+
+            // Crear ACC y EMG usando el constructor parcial
+            List<Integer> accSignalData = parseIntegerList(fields[6]);
+            List<Integer> accTimestamps = parseIntegerList(fields[7]); // Asumimos timestamps separados
+            ACC acc = new ACC(accSignalData, accTimestamps);
+
+            List<Integer> emgSignalData = parseIntegerList(fields[8]);
+            List<Integer> emgTimestamps = parseIntegerList(fields[9]); // Asumimos timestamps separados
+            EMG emg = new EMG(emgSignalData, emgTimestamps);
+
+            // Información genética
+            boolean geneticBackground = Boolean.parseBoolean(fields[10]);
+
+            // Crear el objeto MedicalRecord
+            return new MedicalRecord(age, weight, height, symptoms, acc, emg, geneticBackground, patientName, patientSurname);
+        } catch (Exception e) {
+            System.err.println("Error deserializing medical record: " + e.getMessage());
+            return null;
+        }
+    }
+
+    private List<Integer> parseIntegerList(String data) {
+        return Arrays.stream(data.split(","))
+                .map(Integer::parseInt)
+                .collect(Collectors.toList());
+    }
+
+
+    private String serializeDoctorsResponse(DoctorsNote note, Treatment treatment) {
+        return "Doctors Note: " + note.getNotes() + ", Treatment: " + treatment.getDescription();
+    }
+
+
+
 
 
 
