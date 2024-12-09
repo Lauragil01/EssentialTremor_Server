@@ -88,15 +88,22 @@ public class ClientHandler implements Runnable{
             }
 
             String hashedPassword = PasswordHash.hashPassword(password);
+            Patient patient = PatientService.getPatientByUsername(username);
+
+            if (patient == null) {
+                writer.println("ERROR|Patient not found in fields.");
+                return;
+            }
             if (PatientService.validatePatient(username, hashedPassword)) {
-                Patient patient = PatientService.getPatientByUsername(username);
+                String response = String.format("SUCCESS|%s|%s|%s|%s|%s",
+                        patient.getName(),
+                        patient.getSurname(),
+                        patient.getGenetic_background(),
+                        patient.getUser().getUsername(),
+                        patient.getUser().getPassword());
+                writer.println(response);
                 writer.println("SUCCESS|Login successful. Welcome, " + username + "!");
-                if (patient != null) {
-                    // Serialize patient data to send back to the client
-                    String patientData = serializePatient(patient);
-                    writer.println(" --> " + patientData);
-                    return;
-                }
+
             } else {
                 writer.println("ERROR|Invalid password. Please try again.");
             }
