@@ -77,8 +77,11 @@ public class PatientService {
                 String name = patientData[2];
                 String surname = patientData[3];
                 boolean geneticBackground = Boolean.parseBoolean(patientData[4]);
-
-                return new Patient(name, surname, geneticBackground, new User(username, hashedPassword));
+                Patient patient=new Patient(name, surname, geneticBackground, new User(username, hashedPassword));
+                if (patient.getMedicalRecords() == null) {
+                    patient.setMedicalRecord(new ArrayList<>()); // not null
+                }
+                return patient;
             }
         }
 

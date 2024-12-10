@@ -11,7 +11,6 @@ public class Patient {
 
     private User user;
     private List<MedicalRecord> medicalRecords;
-    //private List<Doctor> doctors;
 
     public Patient() {
     }
@@ -73,8 +72,10 @@ public class Patient {
         this.genetic_background = genetic_background;
     }
 
-
     public List<MedicalRecord> getMedicalRecords() {
+        if (medicalRecords == null) {
+            medicalRecords = new ArrayList<>(); // Asegura que no sea null
+        }
         return medicalRecords;
     }
 
