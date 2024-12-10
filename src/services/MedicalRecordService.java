@@ -11,7 +11,7 @@ import java.util.List;
 
 public class MedicalRecordService {
 
-    private static final String FILE_PATH = "C:\\Users\\Laura Gil\\Desktop\\Uni\\Telemedicina\\EssentialTremor_Server2\\data\\MedicalRecord.csv";
+    private static final String FILE_PATH = "C:\\Users\\Ana\\IdeaProjects\\EssentialTremor_Server\\data\\MedicalRecord.csv";
 
     // Save medical record in CSV file
     public static void saveMedicalRecord(MedicalRecord record) {
