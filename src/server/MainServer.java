@@ -96,23 +96,71 @@ public class MainServer {
         }
     }*/
         private static final int PORT = 12345;
+        private static final String ADMIN_PASSWORD = "admin123"; // Contraseña del administrador
+        private static boolean running = true; // Control del servidor
+
+
+
+    public static void main(String[] args) {
+        Doctor doctor=new Doctor("Virtual Doctor", " ");
+
+        try(ServerSocket serverSocket = new ServerSocket(PORT)) {
+            System.out.println("Server is running on port " + PORT);
+            System.out.println("Waiting for clients...");
+
+            AdminHandler adminHandler = new AdminHandler(serverSocket, ADMIN_PASSWORD);
+            Thread adminThread = new Thread(adminHandler);
+            adminThread.start();
+
+            while (running) {
+                try {
+                    Socket clientSocket = serverSocket.accept();
+                    System.out.println("Client connected.");
+
+                    ClientHandler clientHandler = new ClientHandler(clientSocket, doctor);
+                    Thread thread = new Thread(clientHandler);
+                    thread.start();
+                } catch (IOException e) {
+                    System.err.println("Error client connection: " + e.getMessage());
+                    running = false;//Detener el servidor si hay error
+                }
+            }
+
+        } catch (IOException e) {
+            System.err.println("Error starting server: " + e.getMessage());
+        }finally{
+            System.out.println("Server stopped");
+        }
+    }
+
+}
+/*
+
 
         public static void main(String[] args) {
             Doctor doctor=new Doctor("Virtual Doctor", " ");
-            boolean running=true;
+            //boolean running=true;
+            Scanner sc = new Scanner(System.in);
 
             try (ServerSocket serverSocket = new ServerSocket(PORT)) {
+
                 System.out.println("Server is running on port " + PORT + "...");
                 System.out.println("Waiting for clients...");
+
+                // Crear un hilo para manejar comandos del administrador usando clase personalizada
+                AdminHandler adminHandler = new AdminHandler(sc, serverSocket);
+                Thread adminThread = new Thread(adminHandler);
+                adminThread.start();
 
                 while (running) {
                     try {
                         Socket clientSocket = serverSocket.accept();
-                        System.out.println("Client connected.");
+                        System.out.println("Client connected."+ clientSocket.getInetAddress());
 
                         ClientHandler clientHandler = new ClientHandler(clientSocket, doctor);
-                        Thread thread = new Thread(clientHandler);
-                        thread.start();
+                        Thread clientThread = new Thread(clientHandler);
+                        clientThread.start();
+
                     } catch (IOException e) {
                         System.err.println("Error client connection: " + e.getMessage());
                         running = false;
@@ -121,6 +169,7 @@ public class MainServer {
             }catch(IOException ex){
                 System.out.println("Error starting server: "+ ex.getMessage());
             }finally{
+                sc.close();
                 System.out.println("Server stopped");
             }
         }
@@ -293,7 +342,8 @@ public class MainServer {
             System.err.println("Error starting server: " + e.getMessage());
         }
     }
-*/
+
 
 
 }
+*/

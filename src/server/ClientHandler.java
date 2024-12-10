@@ -17,6 +17,7 @@ import java.util.stream.Collectors;
 
 
 public class ClientHandler implements Runnable{
+        private static int connectedClients = 0; // Contador de clientes conectados
         private final Socket clientSocket;
         private  BufferedReader bufferedReader;
         private  PrintWriter printWriter;
@@ -26,6 +27,11 @@ public class ClientHandler implements Runnable{
         public ClientHandler(Socket clientSocket, Doctor doctor) {
             this.clientSocket = clientSocket;
             this.doctor=doctor;
+
+            // Incrementar contador al aceptar la conexión
+            incrementConnectedClients();
+            System.out.println("Client connected. Total clients: " + getConnectedClients());
+
         }
 
         @Override
@@ -40,6 +46,10 @@ public class ClientHandler implements Runnable{
                 while ((clientRequest = bufferedReader.readLine()) != null) {
                     System.out.println("Received request: " + clientRequest);
 
+                    if (clientRequest.equalsIgnoreCase("DISCONNECT")) {
+                        System.out.println("Client requested to disconnect.");
+                        break; // Salir del bucle para cerrar la conexión
+                    }
                     if (clientRequest.startsWith("REGISTER_PATIENT|")) {
                         processPatientData(clientRequest, printWriter);
                     } else if (clientRequest.startsWith("LOGIN|")) {
@@ -54,11 +64,30 @@ public class ClientHandler implements Runnable{
                 releaseResources();
             }
         }
+
+
+    private void incrementConnectedClients() {
+        connectedClients++;
+    }
+
+    private void decrementConnectedClients() {
+        connectedClients--;
+    }
+
+    public static int getConnectedClients() {
+        return connectedClients;
+    }
+
     private void releaseResources() {
         try {
             if (bufferedReader != null) bufferedReader.close();
             if (printWriter != null) printWriter.close();
             if (clientSocket != null && !clientSocket.isClosed()) clientSocket.close();
+
+            // Decrementar contador al liberar recursos
+            decrementConnectedClients();
+            System.out.println("Client disconnected. Total clients: " + getConnectedClients());
+
         } catch (IOException e) {
             Logger.getLogger(ClientHandler.class.getName()).log(Level.SEVERE, "Error releasing resources", e);
         }
