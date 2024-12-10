@@ -11,10 +11,10 @@ import java.util.List;
 
 public class MedicalRecordService {
 
-    private static final String FILE_PATH = "C:\\Users\\Ana\\IdeaProjects\\EssentialTremor_Server\\data\\MedicalRecord.csv";
+    private static final String FILE_PATH = "C:\\Users\\Laura Gil\\Desktop\\Uni\\Telemedicina\\EssentialTremor_Server2\\data\\MedicalRecord.csv";
 
     // Save medical record in CSV file
-    public static void saveMedicalRecord(MedicalRecord record) {
+   /* public static void saveMedicalRecord(MedicalRecord record) {
         CsvHandler.writeToCsv(FILE_PATH, Arrays.asList(
                 record.getPatientName(),
                 record.getPatientSurname(),
@@ -23,7 +23,7 @@ public class MedicalRecordService {
                 String.valueOf(record.getHeight()),
                 String.valueOf(record.getGenetic_background()),
                 String.join(";", record.getSymptoms()))); // Unir síntomas en un solo String
-    }
+    }*/
 
     // Read medical Record from CSV file
     public static List<MedicalRecord> readMedicalRecords() {
@@ -56,10 +56,14 @@ public class MedicalRecordService {
                 String.valueOf(record.getWeight()),
                 String.valueOf(record.getHeight()),
                 String.join(",", record.getSymptoms()),
-                record.getAcc().toString(),
+                /*record.getAcc().toString(),
                 record.getEmg().toString(),
                 note.getNotes(),
-                treatment.getDescription()
+                treatment.getDescription()*/
+                record.getAcc() != null ? record.getAcc().getFilename() : "N/A",
+                record.getEmg() != null ? record.getEmg().getFilename() : "N/A",
+                note != null ? note.getNotes() : "No notes",
+                treatment != null ? treatment.getDescription() : "No treatment"
         );
 
         CsvHandler.writeToCsv(FILE_PATH, data);

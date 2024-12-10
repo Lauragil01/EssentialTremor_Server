@@ -1,1 +1,1 @@
-id,patient_id,age,weight,height,genetic_background,symptoms
+PatientName,Surname,Age,Weight,Height,Symptoms,GeneticBackground,ACC_Filename,ACC_Path,ACC_Timestamps,EMG_Filename,EMG_Path,EMG_Timestamps
