@@ -86,6 +86,42 @@ public class Patient {
     public void addMedicalRecord(MedicalRecord medicalRecord) {
         this.medicalRecords.add(medicalRecord);
     }
+
+    //choosing Medical Record
+    public MedicalRecord chooseMR() {
+        if (this.medicalRecords.isEmpty()) {
+            System.out.println("No medical records available.");
+            return null;
+        }
+
+        Scanner sc = new Scanner(System.in);
+        System.out.println("Available Medical Records:");
+
+        // Display medical records with indices
+        for (int i = 0; i < this.medicalRecords.size(); i++) {
+            System.out.println((i + 1) + ": " + this.medicalRecords.get(i)); // using toString of MedicalRecord class
+        }
+
+        int choice;
+        while (true) {
+            try {
+                System.out.print("Enter the number of the medical record you want to choose: ");
+                choice = sc.nextInt();
+                if (choice > 0 && choice <= medicalRecords.size()) {
+                    break;
+                } else {
+                    System.out.println("Invalid choice. Please enter a number between 1 and " + medicalRecords.size());
+                }
+            } catch (InputMismatchException e) {
+                System.out.println("Invalid input. Please enter a numeric value.");
+                sc.next(); // Clear the invalid input
+            }
+        }
+        //sc.close();
+        // Return the selected medical record
+        return medicalRecords.get(choice-1);
+    }
+
     /*private void openRecord() {
         MedicalRecord record = askData();
         record.setPatientName(this.name);

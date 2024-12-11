@@ -20,7 +20,7 @@ import java.util.stream.IntStream;
 
 public class MedicalRecordService {
 
-    private static final String FILE_PATH = "C:\\Users\\Laura Gil\\Desktop\\Uni\\Telemedicina\\EssentialTremor_Server2\\data\\MedicalRecord.csv";
+    private static final String FILE_PATH = "C:\\Users\\Ana\\IdeaProjects\\EssentialTremor_Server\\data\\MedicalRecord.csv";
     //private static final String ACC_FILE = "C:\\Users\\Laura Gil\\Desktop\\Uni\\Telemedicina\\EssentialTremor_Server2\\data\\acc_signals.csv";
     //private static final String EMG_FILE = "C:\\Users\\Laura Gil\\Desktop\\Uni\\Telemedicina\\EssentialTremor_Server2\\data\\emg_signals.csv";
 

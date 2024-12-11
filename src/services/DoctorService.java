@@ -10,7 +10,7 @@ import java.util.List;
 public class DoctorService {
 
     //TODO: revisar ruta
-    private static final String FILE_PATH = "C:\\Users\\Laura Gil\\Desktop\\Uni\\Telemedicina\\EssentialTremor_Server2\\data\\Doctor.csv";
+    private static final String FILE_PATH = "C:\\Users\\Ana\\IdeaProjects\\EssentialTremor_Server\\data\\Doctor.csv";
 
 
     public static void registerDoctor(String username, String hashPassword){

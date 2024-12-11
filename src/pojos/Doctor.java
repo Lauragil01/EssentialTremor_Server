@@ -111,7 +111,7 @@ public class Doctor {
     }
 
 
-    private Patient choosePatient() {
+    public static Patient choosePatient() {
         Scanner sc = new Scanner(System.in);
         List<Patient> listOfPatients = getPatients();
         for (int i = 0; i < listOfPatients.size(); i++) {
@@ -123,7 +123,7 @@ public class Doctor {
         sc.close();
         return listOfPatients.get(number - 1);
     }
-    private static void listAllPatients() {
+    public static void listAllPatients() {
         try {
             List<String[]> patients = CsvHandler.readFromCsv(PatientService.FILE_PATH);
             System.out.println("\n--- Registered Patients ---");

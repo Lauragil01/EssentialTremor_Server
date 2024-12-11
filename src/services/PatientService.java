@@ -10,7 +10,7 @@ import java.util.List;
 
 public class PatientService {
 
-    public static final String FILE_PATH = "C:\\Users\\Laura Gil\\Desktop\\Uni\\Telemedicina\\EssentialTremor_Server2\\data\\Patient.csv";
+    public static final String FILE_PATH = "C:\\Users\\Ana\\IdeaProjects\\EssentialTremor_Server\\data\\Patient.csv";
 
     public static boolean validatePatient(String username, String hashPassword) {
         List<String[]> patients = CsvHandler.readFromCsv(FILE_PATH);
