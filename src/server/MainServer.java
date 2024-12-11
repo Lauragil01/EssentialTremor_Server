@@ -101,17 +101,20 @@ public class MainServer {
 
 
     public static void main(String[] args) {
-        Doctor doctor=new Doctor("Virtual Doctor", " ");
+        Doctor doctor = new Doctor("Virtual Doctor", " ");
+        Scanner scanner = new Scanner(System.in);
 
-        try(ServerSocket serverSocket = new ServerSocket(PORT)) {
+        try (ServerSocket serverSocket = new ServerSocket(PORT)) {
             System.out.println("Server is running on port " + PORT);
-            System.out.println("Waiting for clients...");
 
             AdminHandler adminHandler = new AdminHandler(serverSocket, ADMIN_PASSWORD);
             Thread adminThread = new Thread(adminHandler);
             adminThread.start();
 
-            while (running) {
+            while (true) {
+                System.out.println("Waiting for clients...");
+
+
                 try {
                     Socket clientSocket = serverSocket.accept();
                     System.out.println("Client connected.");
@@ -119,20 +122,57 @@ public class MainServer {
                     ClientHandler clientHandler = new ClientHandler(clientSocket, doctor);
                     Thread thread = new Thread(clientHandler);
                     thread.start();
+                    while (running) {
+                        System.out.println("\n@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
+                        System.out.println("@@                                                                  @@");
+                        System.out.println("@@          Welcome! Server opened, listening for patients          @@");
+                        System.out.println("@@                 1. List all patients                             @@");
+                        System.out.println("@@                 2. Receive/Process Medical Record                @@");
+                        System.out.println("@@                 3. Show Medical Record with Plots                @@");
+                        System.out.println("@@                 0. Exit                                          @@");
+                        System.out.println("@@                                                                  @@");
+                        System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
+                        System.out.print("\nSelect an option: ");
+
+                        int option;
+                        try {
+                            option = Integer.parseInt(scanner.nextLine());
+                        } catch (NumberFormatException e) {
+                            System.out.println("Invalid input. Please enter a number.");
+                            continue;
+                        }
+
+                        switch (option) {
+                            case 1:
+
+                                break;
+                            case 2:
+
+                                break;
+                            case 3:
+
+                                break;
+                            case 0:
+                                running = false;
+                                break;
+                            default:
+                                System.out.println("Invalid option. Please try again.");
+                                break;
+                        }
+                    }
+
                 } catch (IOException e) {
-                    System.err.println("Error client connection: " + e.getMessage());
-                    running = false;//Detener el servidor si hay error
+                    System.err.println("Error starting server: " + e.getMessage());
+
+                } catch (IOException e) {
+                    System.err.println("Error starting server: " + e.getMessage());
+                } finally {
+                    System.out.println("Server stopped.");
+                    scanner.close();
                 }
-            }
 
-        } catch (IOException e) {
-            System.err.println("Error starting server: " + e.getMessage());
-        }finally{
-            System.out.println("Server stopped");
-        }
-    }
 
-}
+
 /*
 
 
@@ -301,11 +341,7 @@ public class MainServer {
 */
 
 
-
-
-
-
-    //****************MENU TESTS*******************************
+                //****************MENU TESTS*******************************
     /*public static void main(String[] args) {
         try (ServerSocket serverSocket = new ServerSocket(12345)) {
             System.out.println("Server is running on port 12345...");
@@ -346,3 +382,4 @@ public class MainServer {
 
 }
 */
+            }

@@ -4,14 +4,15 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="cf5eb29e-ec59-48b6-ac09-bd3496151015" name="Changes" comment="adding corrections">
-      <change afterPath="$PROJECT_DIR$/src/server/AdminHandler.java" afterDir="false" />
+    <list default="true" id="cf5eb29e-ec59-48b6-ac09-bd3496151015" name="Changes" comment="more changes">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/MedicalRecord.csv" beforeDir="false" afterPath="$PROJECT_DIR$/data/MedicalRecord.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/Patient.csv" beforeDir="false" afterPath="$PROJECT_DIR$/data/Patient.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/acc_signals.csv" beforeDir="false" afterPath="$PROJECT_DIR$/data/acc_signals.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/emg_signals.csv" beforeDir="false" afterPath="$PROJECT_DIR$/data/emg_signals.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/server/ClientHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/server/ClientHandler.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/server/MainServer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/server/MainServer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/services/DoctorService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/services/DoctorService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/services/MedicalRecordService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/services/MedicalRecordService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/services/PatientService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/services/PatientService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/signals/ACC.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/signals/ACC.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -248,7 +249,14 @@
       <option name="project" value="LOCAL" />
       <updated>1733823180080</updated>
     </task>
-    <option name="localTasksCounter" value="12" />
+    <task id="LOCAL-00012" summary="more changes">
+      <created>1733847800749</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1733847800749</updated>
+    </task>
+    <option name="localTasksCounter" value="13" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -265,6 +273,7 @@
     <MESSAGE value="log in fixed" />
     <MESSAGE value="correcting errors" />
     <MESSAGE value="adding corrections" />
-    <option name="LAST_COMMIT_MESSAGE" value="adding corrections" />
+    <MESSAGE value="more changes" />
+    <option name="LAST_COMMIT_MESSAGE" value="more changes" />
   </component>
 </project>
