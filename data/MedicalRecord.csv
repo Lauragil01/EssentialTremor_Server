@@ -1,1 +1,9 @@
-PatientName,Surname,Age,Weight,Height,Symptoms,GeneticBackground,ACC_Filename,ACC_Path,ACC_Timestamps,EMG_Filename,EMG_Path,EMG_Timestamps
+PatientName,Surname,Age,Weight,Height,Symptoms,GeneticBackground
+laura,gilGavela,23,60.0,170,tremor,true
+laura,gilGavela,23,60.0,170,tremor,true
+laura,gil,23,60.0,170,tremor,false
+laura,gil,24,50.0,160,pain,false
+laura,gil,22,50.0,160,pain,false
+laura,gil,10,40.0,150,pain,false
+laura,gil,34,50.0,160,strong pain,false
+laura,gil,23,60.0,170,tremor,false

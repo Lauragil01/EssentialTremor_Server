@@ -2,6 +2,7 @@ package pojos;
 
 
 
+import server.MainServer;
 import services.PatientService;
 import signals.ACC;
 import signals.EMG;
@@ -111,29 +112,33 @@ public class Doctor {
     }
 
 
-    public static Patient choosePatient() {
+    public   Patient choosePatient() {
         Scanner sc = new Scanner(System.in);
-        List<Patient> listOfPatients = getPatients();
+        List<Patient> listOfPatients = MainServer.getDoctor().getPatients();
+        if (listOfPatients.isEmpty()) {
+            System.out.println("No patients available.");
+            return null;
+        }
         for (int i = 0; i < listOfPatients.size(); i++) {
             System.out.println((i + 1) + ": " + listOfPatients.get(i).getName() + " " + listOfPatients.get(i).getSurname());
         }
         System.out.println("--- Please choose the patient by number: ");
 
-        int number = sc.nextInt();
-        sc.close();
-        return listOfPatients.get(number - 1);
-    }
-    public static void listAllPatients() {
+        int number;
         try {
-            List<String[]> patients = CsvHandler.readFromCsv(PatientService.FILE_PATH);
-            System.out.println("\n--- Registered Patients ---");
-            for (String[] patient : patients) {
-                System.out.println(String.join(", ", patient));
+            number = sc.nextInt();
+            if (number < 1 || number > listOfPatients.size()) {
+                System.out.println("Invalid number. Returning to menu.");
+                return null;
             }
         } catch (Exception e) {
-            System.err.println("Error reading patient data: " + e.getMessage());
+            System.out.println("Invalid input. Returning to menu.");
+            sc.nextLine(); // Limpia el buffer
+            return null;
         }
+        return listOfPatients.get(number - 1);
     }
+
 
     public MedicalRecord receiveMedicalRecord(Socket socket, BufferedReader bufferedReader) throws IOException {
         MedicalRecord medicalRecord = null;
@@ -176,7 +181,7 @@ public class Doctor {
                 .collect(Collectors.toList());
     }
 
-    private void showInfoMedicalRecord(MedicalRecord medicalRecord){
+    public void showInfoMedicalRecord(MedicalRecord medicalRecord){
         System.out.println(medicalRecord);
         medicalRecord.showAcc();
         medicalRecord.showEMG();
@@ -246,6 +251,41 @@ public class Doctor {
         sc.close();
     }
 
+    public MedicalRecord chooseMR() {
+        if (this.medicalRecords.isEmpty()) {
+            System.out.println("No medical records available.");
+            return null;
+        }
+
+        Scanner sc = new Scanner(System.in);
+        System.out.println("Available Medical Records:");
+
+        // Display medical records with indices
+        for (int i = 0; i < this.medicalRecords.size(); i++) {
+            System.out.println((i + 1) + ": " + this.medicalRecords.get(i)); // using toString of MedicalRecord class
+        }
+
+        int choice;
+        while (true) {
+            try {
+                System.out.print("Enter the number of the medical record you want to choose: ");
+                choice = sc.nextInt();
+                if (choice > 0 && choice <= medicalRecords.size()) {
+                    break;
+                } else {
+                    System.out.println("Invalid choice. Please enter a number between 1 and " + medicalRecords.size());
+                }
+            } catch (InputMismatchException e) {
+                System.out.println("Invalid input. Please enter a numeric value.");
+                sc.next(); // Clear the invalid input
+            }
+        }
+        //sc.close();
+        // Return the selected medical record
+        return medicalRecords.get(choice-1);
+    }
+
+
     public void sendDoctorsNote(DoctorsNote doctorsNote, Socket socket,PrintWriter printWriter) throws IOException {
         System.out.println("Sending text");
         printWriter.println(getName());
@@ -264,7 +304,7 @@ public class Doctor {
         }
     }*/
 
-    private void addPatient(){
+   /* private void addPatient(){
         Scanner sc = new Scanner(System.in);
         System.out.println("- Name: ");
         String name = sc.nextLine();
@@ -290,7 +330,7 @@ public class Doctor {
         //patient.getDoctors().add(this);
         this.getPatients().add(patient);
         sc.close();
-    }
+    }*/
 
     public DoctorsNote generateDoctorsNote(MedicalRecord medicalRecord) {
         StringBuilder note = new StringBuilder();
@@ -314,6 +354,11 @@ public class Doctor {
         } else {
             return Treatment.SURGERY;
         }
+    }
+
+    public void addMedicalRecord(MedicalRecord medicalRecord) {
+        this.medicalRecords.add(medicalRecord);
+        System.out.println("Medical record of " + medicalRecord.getPatientName() +" "+  medicalRecord.getPatientSurname() + " added to the doctor's list " );
     }
     public String serializeDoctorsResponse(DoctorsNote note, Treatment treatment) {
         return "Doctor's Note: " + note.getNotes() + "\nTreatment: " + treatment.getDescription();

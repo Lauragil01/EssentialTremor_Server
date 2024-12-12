@@ -1,5 +1,6 @@
 package services;
 
+import bITalino.BitalinoDemo;
 import pojos.DoctorsNote;
 import pojos.MedicalRecord;
 import pojos.Treatment;
@@ -8,19 +9,26 @@ import signals.EMG;
 import signals.Signals;
 import utils.CsvHandler;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public class MedicalRecordService {
 
-    private static final String FILE_PATH = "C:\\Users\\Ana\\IdeaProjects\\EssentialTremor_Server\\data\\MedicalRecord.csv";
+    private static final String FILE_PATH = "C:\\Users\\Laura Gil\\Desktop\\Uni\\Telemedicina\\EssentialTremor_Server2\\data\\MedicalRecord.csv";
     //private static final String ACC_FILE = "C:\\Users\\Laura Gil\\Desktop\\Uni\\Telemedicina\\EssentialTremor_Server2\\data\\acc_signals.csv";
     //private static final String EMG_FILE = "C:\\Users\\Laura Gil\\Desktop\\Uni\\Telemedicina\\EssentialTremor_Server2\\data\\emg_signals.csv";
 
@@ -65,65 +73,46 @@ public class MedicalRecordService {
         System.out.println("Medical record saved to " + FILE_PATH);
 
         // Guardar señales en archivos separados
-        if (record.getAcc() != null) {
-            saveACCToCsv(record.getAcc(), record.getAcc().getPath());
+        if (record.getAcc() != null && record.getEmg() != null) {
+            saveDataToFile(record.getPatientName(), record.getAcc(), record.getEmg());
         }
-        if (record.getEmg() != null) {
-            saveEMGToCsv(record.getEmg(), record.getEmg().getPath());
-        }
+
     }
 
-    private static void saveACCToCsv(ACC acc, String filePath) {
-        //ensureCsvHeaders(filePath, "Signal_Data,Filename,Path,Timestamp");
+    private static String saveDataToFile(String patientName, ACC acc, EMG emg) {
+        LocalDateTime moment = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss");
+        String timestamp = moment.format(formatter);
 
-        List<String> lines = new ArrayList<>();
-        List<Integer> signalData = acc.getSignalData();
-        List<Integer> timestamps = acc.getTimestamp();
-
-        for (int i = 0; i < signalData.size(); i++) {
-            String line = String.format(
-                    "%d,%s,%s,%d",
-                    signalData.get(i),
-                    acc.getFilename(),
-                    acc.getPath(),
-                    timestamps.get(i)
-            );
-            lines.add(line);
-        }
-
+        Path folderPath = Paths.get("BITalinoData");
         try {
-            Files.write(Paths.get(filePath), lines, StandardOpenOption.APPEND);
-            System.out.println(acc.getFilename() + " data saved to " + filePath);
+            Files.createDirectories(folderPath);
         } catch (IOException e) {
-            System.err.println("Error writing acc data to CSV file: " + e.getMessage());
+            Logger.getLogger(BitalinoDemo.class.getName()).log(Level.SEVERE, "Error creating directory", e);
         }
+
+        String fileName = "BITalinoData/" + patientName + "_" + timestamp + ".txt";
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName))) {
+            writer.write("Patient Name: " + patientName + "\n");
+            writer.write("Date and Time: " + moment + "\n\n");
+
+            writer.write("EMG Data:\n");
+            for (int i = 0; i < emg.getSignalData().size(); i++) {
+                writer.write("Time: " + emg.getTimestamp().get(i) + ", Signal: " + emg.getSignalData().get(i) + "\n");
+            }
+
+            writer.write("\nACC Data:\n");
+            for (int i = 0; i < acc.getSignalData().size(); i++) {
+                writer.write("Time: " + acc.getTimestamp().get(i) + ", Signal: " + acc.getSignalData().get(i) + "\n");
+            }
+
+            System.out.println("Data saved to " + fileName);
+        } catch (IOException e) {
+            Logger.getLogger(BitalinoDemo.class.getName()).log(Level.SEVERE, "Error writing file", e);
+        }
+        return fileName;
     }
 
-    private static void saveEMGToCsv(EMG emg, String filePath) {
-        //ensureCsvHeaders(filePath, "Signal_Data,Filename,Path,Timestamp");
-
-        List<String> lines = new ArrayList<>();
-        List<Integer> signalData = emg.getSignalData();
-        List<Integer> timestamps = emg.getTimestamp();
-
-        for (int i = 0; i < signalData.size(); i++) {
-            String line = String.format(
-                    "%d,%s,%s,%d",
-                    signalData.get(i),
-                    emg.getFilename(),
-                    emg.getPath(),
-                    timestamps.get(i)
-            );
-            lines.add(line);
-        }
-
-        try {
-            Files.write(Paths.get(filePath), lines, StandardOpenOption.APPEND);
-            System.out.println(emg.getFilename() + " data saved to " + filePath);
-        } catch (IOException e) {
-            System.err.println("Error writing acc data to CSV file: " + e.getMessage());
-        }
-    }
 
     private static List<Integer> parseIntegerList(String data) {
         return Arrays.stream(data.split(","))

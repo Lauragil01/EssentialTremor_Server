@@ -5,14 +5,28 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="cf5eb29e-ec59-48b6-ac09-bd3496151015" name="Changes" comment="more changes">
+      <change afterPath="$PROJECT_DIR$/lib/bluecove-2.1.1-SNAPSHOT.jar" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/bITalino/BITalino.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/bITalino/BITalinoErrorTypes.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/bITalino/BITalinoException.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/bITalino/BitalinoDemo.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/bITalino/DeviceDiscoverer.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/bITalino/Frame.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/Doctor.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/MedicalRecord.csv" beforeDir="false" afterPath="$PROJECT_DIR$/data/MedicalRecord.csv" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/data/Patient.csv" beforeDir="false" afterPath="$PROJECT_DIR$/data/Patient.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/acc_signals.csv" beforeDir="false" afterPath="$PROJECT_DIR$/data/acc_signals.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/emg_signals.csv" beforeDir="false" afterPath="$PROJECT_DIR$/data/emg_signals.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/User.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/sqlite_sequence.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pojos/Doctor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/pojos/Doctor.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pojos/MedicalRecord.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/pojos/MedicalRecord.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pojos/Patient.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/pojos/Patient.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/server/AdminHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/server/AdminHandler.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/server/ClientHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/server/ClientHandler.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/server/MainServer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/server/MainServer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/services/DoctorService.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/services/MedicalRecordService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/services/MedicalRecordService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/signals/ACC.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/signals/ACC.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/services/PatientService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/services/PatientService.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -67,7 +81,7 @@
     "WebServerToolWindowFactoryState": "false",
     "git-widget-placeholder": "master",
     "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "C:/Users/Laura Gil/Desktop/Uni/Telemedicina/EssentialTremor_Server2/src/server",
+    "last_opened_file_path": "C:/Users/Laura Gil/Desktop/Uni/Telemedicina/EssentialTremor_Server2/data",
     "node.js.detected.package.eslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
@@ -80,10 +94,10 @@
 }]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
-      <recent name="C:\Users\Laura Gil\Desktop\Uni\Telemedicina\EssentialTremor_Server2\src\server" />
+      <recent name="C:\Users\Laura Gil\Desktop\Uni\Telemedicina\EssentialTremor_Server2\data" />
       <recent name="C:\Users\Laura Gil\Desktop\Uni\Telemedicina\EssentialTremor_Server2\lib" />
       <recent name="C:\Users\Laura Gil\Desktop\Uni\Telemedicina\EssentialTremor_Server2\src" />
-      <recent name="C:\Users\Laura Gil\Desktop\Uni\Telemedicina\EssentialTremor_Server2\data" />
+      <recent name="C:\Users\Laura Gil\Desktop\Uni\Telemedicina\EssentialTremor_Server2\src\server" />
       <recent name="C:\Users\marty\IdeaProjects\EssentialTremor_Server\lib" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
@@ -91,6 +105,7 @@
       <recent name="C:\Users\marty\IdeaProjects\EssentialTremor_Server\lib" />
     </key>
     <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="bITalino" />
       <recent name="pojos" />
       <recent name="Data" />
     </key>
@@ -256,11 +271,29 @@
       <option name="project" value="LOCAL" />
       <updated>1733847800749</updated>
     </task>
-    <option name="localTasksCounter" value="13" />
+    <task id="LOCAL-00013" summary="more changes">
+      <created>1733923630199</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1733923630199</updated>
+    </task>
+    <option name="localTasksCounter" value="14" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="additions" />

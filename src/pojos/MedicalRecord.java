@@ -170,11 +170,11 @@ public class MedicalRecord {
                 '}';
     }
 
-    void showAcc() {
+    public void showAcc() {
         this.acceleration.plotSignal();
     }
 
-    void showEMG(){
+    public void showEMG(){
         this.emg.plotSignal();
     }
 }

@@ -9,6 +9,7 @@ import utils.PasswordHash;
 
 import java.io.*;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
@@ -34,9 +35,10 @@ public class ClientHandler implements Runnable{
 
             // Incrementar contador al aceptar la conexión
             incrementConnectedClients();
-            System.out.println("Client connected. Total clients: " + getConnectedClients());
+            System.out.println(" Total clients: " + getConnectedClients());
 
         }
+
 
         @Override
         public void run() {
@@ -70,6 +72,7 @@ public class ClientHandler implements Runnable{
                 System.err.println("Error handling client: " + e.getMessage());
             } finally {
                 releaseResources();
+                decrementConnectedClients();
             }
         }
 
@@ -184,6 +187,11 @@ public class ClientHandler implements Runnable{
                 patient.setName(name);
                 patient.setSurname(surname);
                 patient.setGenetic_background(geneticBackground);
+
+                //each time that a patient register is added to the list of patients in Doctor class
+                MainServer.getDoctor().addPatient(patient);
+                //doctor.addPatient(patient);
+
                 // save patient in CSV
                 PatientService.savePatient(patient);
                 writer.println("SUCCESS| Patient registered successfully: " + patient.getUser());
@@ -208,16 +216,18 @@ public class ClientHandler implements Runnable{
             }
 
             // Process medical Record adding doctor
-            Doctor doctor = new Doctor();
             DoctorsNote note = doctor.generateDoctorsNote(medicalRecord);
             Treatment treatment = doctor.prescribeTreatment(medicalRecord);
 
             // data Medical Record to csv including signals ACC and emg
             MedicalRecordService.saveMedicalRecordToCsv(medicalRecord);
 
+            //adding de medical record tu doctor list medicalRecords
+            doctor.addMedicalRecord(medicalRecord);
+            //TODO:
             // Responder al cliente con las notas y tratamiento
-            String response = serializeDoctorsResponse(note, treatment);
-            printWriter.println("SUCCESS|" + response);
+            //String response = serializeDoctorsResponse(note, treatment);
+            //printWriter.println("SUCCESS|" + response);
 
         } catch (Exception e) {
             printWriter.println("ERROR|An error occurred while processing the medical record.");
@@ -229,7 +239,7 @@ public class ClientHandler implements Runnable{
         try {
             String[] fields = data.split(",");
 
-            if (fields.length < 9) { // enoughf fields
+            if (fields.length < 8) { // enoughf fields
                 return null;
             }
 
@@ -246,13 +256,21 @@ public class ClientHandler implements Runnable{
             // Parse Genetic Background
             boolean geneticBackground = Boolean.parseBoolean(fields[6]);
 
-            // Parse ACC Data
-            List<Integer> accTimestamps = parseIntegerList(fields[7]);
-            List<Integer> accSignalData = parseIntegerList(fields[8]);
-            ACC acc = new ACC(accSignalData, "BITalino_ACC_123.txt",ACC_FILE , accTimestamps);
+            List<Integer> accSignalData = new ArrayList<>();
+            List<Integer> emgSignalData = new ArrayList<>();
+            for (int i = 7; i < 1007; i++) {
+                accSignalData.add(Integer.parseInt(fields[i]));
+            }
+
+            // Leer 1000 valores para EMG (del campo 1007 en adelante)
+            for (int i = 1007; i < 2007; i++) {
+                emgSignalData.add(Integer.parseInt(fields[i]));
+            }
+            List<Integer> accTimestamps = generateTimestamps(accSignalData.size());
+            ACC acc = new ACC(accSignalData, patientName,ACC_FILE , accTimestamps);
             // Parse EMG Data
-            List<Integer> emgSignalData = parseIntegerList(fields[9]);
-            EMG emg = new EMG(emgSignalData, "BITalino_EMG_123.txt", EMG_FILE, accTimestamps);
+
+            EMG emg = new EMG(emgSignalData, patientName, EMG_FILE, accTimestamps);
 
 
             MedicalRecord record = new MedicalRecord(patientName, patientSurname, age, weight, height, symptoms, geneticBackground);
@@ -265,6 +283,13 @@ public class ClientHandler implements Runnable{
             System.err.println("Error deserializing medical record: " + e.getMessage());
             return null;
         }
+    }
+    private List<Integer> generateTimestamps(int size) {
+        List<Integer> timestamps = new ArrayList<>();
+        for (int i = 0; i < size; i++) {
+            timestamps.add(i); // Genera un timestamp incremental
+        }
+        return timestamps;
     }
 
     private static List<Integer> parseIntegerList(String data) {
