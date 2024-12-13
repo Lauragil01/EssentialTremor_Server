@@ -3,11 +3,8 @@ package pojos;
 
 
 import server.MainServer;
-import services.PatientService;
 import signals.ACC;
 import signals.EMG;
-import utils.CsvHandler;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -17,7 +14,6 @@ import java.util.stream.Collectors;
 
 public class Doctor {
 
-    //private User user;
     private String name;
     private String surname;
     private List<Patient> patients;
@@ -91,9 +87,7 @@ public class Doctor {
     }
 
 
-    //TODO:-------------------------revisar---------------------
-
-
+//For future implementation if it is needed more doctors
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -167,7 +161,7 @@ public class Doctor {
         EMG emg1 = new EMG(listEmg, listTime);
         medicalRecord = new MedicalRecord(patientName, patientSurname, age, weight, height, listSymptoms, /*acc1, emg1,*/ geneticBackground);
         this.getMedicalRecords().add(medicalRecord);
-        medicalRecord.getDoctors().add(this);
+        //medicalRecord.getDoctors().add(this);
         return medicalRecord;
     }
 
@@ -292,45 +286,6 @@ public class Doctor {
         printWriter.println(getSurname());
         printWriter.println(doctorsNote.getNotes());
     }
-    //TODO: chooseToSendDoctorNotes
-    /*public void chooseToSendDoctorNotes(DoctorsNote dn) throws IOException {
-        System.out.println("\nDo you want to send a doctors note? (y/n)");
-        String option = sc.nextLine();
-        if (option.equalsIgnoreCase("y")) {
-            sendDoctorsNote(dn, clientSocket, printWriter);
-        } else if (!option.equalsIgnoreCase("y") || option.equalsIgnoreCase("n")) {
-            System.out.println("Not a valid option, try again...");
-            chooseToSendDoctorNotes(dn);
-        }
-    }*/
-
-   /* private void addPatient(){
-        Scanner sc = new Scanner(System.in);
-        System.out.println("- Name: ");
-        String name = sc.nextLine();
-        System.out.println("- Surname: ");
-        String surname = sc.nextLine();
-        System.out.println("- Genetic background: (y/n)");
-        String genBackCheck = sc.nextLine();
-        Boolean genBack = null;
-        //check
-        Boolean valid = false;
-        while (!valid) {
-            if (genBackCheck.equals("y")) {
-                valid = true;
-                genBack = true;
-            } else if (genBackCheck.equals("n")) {
-                valid = true;
-                genBack = false;
-            } else {
-                System.out.println("---NOT A VALID INPUT, PLEASE TRY AGAIN...");
-            }
-        }
-        Patient patient = new Patient(name,surname,genBack);
-        //patient.getDoctors().add(this);
-        this.getPatients().add(patient);
-        sc.close();
-    }*/
 
     public DoctorsNote generateDoctorsNote(MedicalRecord medicalRecord) {
         StringBuilder note = new StringBuilder();
@@ -364,10 +319,14 @@ public class Doctor {
         return "Doctor's Note: " + note.getNotes() + "\nTreatment: " + treatment.getDescription();
     }
 
+
+    //TESTS-----------------------------------------------------------------------------------------
+
     /*public static void main(String[] args) throws IOException {
         List<Patient> list = null;
         Doctor d = new Doctor("a","a",list);
 
         d.receiveMedicalRecord();
     }*/
+
 }

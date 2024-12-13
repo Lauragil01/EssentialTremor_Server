@@ -4,9 +4,7 @@ import pojos.*;
 import services.PatientService;
 
 import java.io.*;
-import java.net.ServerSocket;
-import java.net.Socket;
-import java.util.Collections;
+import java.net.*;
 import java.util.List;
 import java.util.Scanner;
 
@@ -14,15 +12,13 @@ public class MainServer {
 
         private static final int PORT = 12345;
         private static final String ADMIN_PASSWORD = "admin123"; // Contraseña del administrador
+        private static final int PORT_MULTICAST = 8888; //  multicast port
+        private static final String MULTICAST_GROUP = "230.0.0.0";
+
         private static boolean running = true; // Control del servidor
 
-        //private static List<ClientHandler> clientHandlers = Collections.synchronizedList(new ArrayList<>());
-
-    //private static Patient patient;
         private static Doctor doctor;
 
-        private static AdminHandler adminHandler;
-       // private static MedicalRecord medicalRecord;
 
 
     public static Doctor getDoctor() {
@@ -36,9 +32,11 @@ public class MainServer {
         try (ServerSocket serverSocket = new ServerSocket(PORT)) {
             System.out.println("Server is running on port " + PORT);
 
+            // Hilo multicast
+            new Thread(() -> sendMulticast(PORT)).start();
 
 
-            // Hilo manjeo conexiones clients
+            // Hilo client connections
             Thread clientHandlerThread = new Thread(() -> {
                 while (running) {
 
@@ -58,7 +56,7 @@ public class MainServer {
                             System.out.println("Error handling client connection: " + e.getMessage());
                             break;
                         }
-                        System.err.println("Error handling client connection: " + e.getMessage());
+                        System.out.println("Error handling client connection: " + e.getMessage());
                     }
                 }
             });
@@ -75,6 +73,26 @@ public class MainServer {
         } finally {
             scanner.close();
             System.out.println("Server stopped.");
+        }
+    }
+    private static void sendMulticast(int port) {
+        try (DatagramSocket socket = new DatagramSocket()) {
+            InetAddress group = InetAddress.getByName(MULTICAST_GROUP);
+            String message = "SERVER|" + InetAddress.getLocalHost().getHostAddress() + ":" + port;
+
+            while (running) {
+                DatagramPacket packet = new DatagramPacket(
+                        message.getBytes(),
+                        message.length(),
+                        group,
+                        PORT_MULTICAST
+                );
+                socket.send(packet);
+               // System.out.println("Multicast sent: " + message);
+                Thread.sleep(5000); // sending each 5 secs
+            }
+        } catch (IOException | InterruptedException e) {
+            System.err.println("Error in multicast: " + e.getMessage());
         }
     }
 
@@ -111,7 +129,7 @@ public class MainServer {
                 break;
             case 3:
                 System.out.println("Option 3 selected: Show Medical Record with Plots.");
-                showMedicalRecordWithPlots(); // Llamas al metodo que muestra los gráficos
+                showMedicalRecordWithPlots();
                 break;
             case 0:
                 System.out.println("Option 0 selected: Shutdown Server."); // Aquí se maneja el apagado y la autenticación
@@ -141,7 +159,7 @@ public class MainServer {
         if (patients.isEmpty()) {
             System.out.println("No patients registered in this sesion.");
         } else {
-            System.out.println("\n--- Registered Patients during this sesion ---");
+            System.out.println("\n--- Registered Patients during this session ---");
             for (Patient patient : patients) {
                 System.out.println(patient.getName() + " " + patient.getSurname());
             }
@@ -183,11 +201,10 @@ public class MainServer {
             System.out.println("No medical record available for the selected patient.");
             return;
         }
-        doctor.showInfoMedicalRecord(medicalRecord);
+        //doctor.showInfoMedicalRecord(medicalRecord);
+        medicalRecord.showAcc();
+        medicalRecord.showEMG();
     }
-
-
-
 
 
 

@@ -4,15 +4,19 @@ import pojos.Patient;
 import pojos.User;
 import utils.CsvHandler;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class PatientService {
 
-    public static final String FILE_PATH = "C:\\Users\\Laura Gil\\Desktop\\Uni\\Telemedicina\\EssentialTremor_Server2\\data\\Patient.csv";
+    public static final String FILE_PATH = "data/Patient.csv";
 
     public static boolean validatePatient(String username, String hashPassword) {
+        ensureFileExists();
         List<String[]> patients = CsvHandler.readFromCsv(FILE_PATH);
 
         for (String[] patient : patients) {
@@ -44,6 +48,7 @@ public class PatientService {
 
     // Read patients from CVS file
     public static List<Patient> readPatients() {
+        ensureFileExists();
         List<Patient> patients = new ArrayList<>();
         List<String[]> rows = CsvHandler.readFromCsv(FILE_PATH);
 
@@ -58,6 +63,7 @@ public class PatientService {
         return patients;
     }
     public static boolean isUsernameTaken(String username) {
+        ensureFileExists();
         List<String[]> patients = CsvHandler.readFromCsv(FILE_PATH);
 
         for (String[] patient : patients) {
@@ -69,6 +75,7 @@ public class PatientService {
     }
 
     public static Patient getPatientByUsername(String username) {
+        ensureFileExists();
         List<String[]> patients = CsvHandler.readFromCsv(FILE_PATH);
 
         for (String[] patientData : patients) {
@@ -85,8 +92,21 @@ public class PatientService {
             }
         }
 
-        // Si no se encuentra, devolver null
+        // not found
         return null;
+    }
+
+    private static void ensureFileExists() {
+        try {
+            Path path = Paths.get(FILE_PATH);
+            if (!Files.exists(path)) {
+                Files.createDirectories(path.getParent()); // Crear directorios si no existen
+                Files.createFile(path); // Crear archivo vacío
+                System.out.println("Patient.csv created at: " + path.toAbsolutePath());
+            }
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to create Patient.csv: " + e.getMessage());
+        }
     }
 
 

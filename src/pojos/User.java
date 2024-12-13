@@ -10,8 +10,7 @@ public class User implements Serializable {
     public String username;
     String password;
 
-    public User() {
-    }
+
 
     public User(String username, String password) {
         this.username=username;
@@ -30,17 +29,6 @@ public class User implements Serializable {
         return password;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
 
     @Override
     public String toString() {

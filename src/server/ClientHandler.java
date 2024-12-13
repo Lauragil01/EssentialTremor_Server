@@ -63,7 +63,7 @@ public class ClientHandler implements Runnable{
                     } else if (clientRequest.startsWith("MEDICAL_RECORD|")) {
                         // Processing MR
                         String medicalRecordData = clientRequest.replaceFirst("MEDICAL_RECORD\\|", "");
-                        processMedicalRecord(medicalRecordData);
+                        processMedicalRecord(medicalRecordData, printWriter);
                     } else {
                         printWriter.println("ERROR|Unknown request type.");
                     }
@@ -72,7 +72,7 @@ public class ClientHandler implements Runnable{
                 System.err.println("Error handling client: " + e.getMessage());
             } finally {
                 releaseResources();
-                decrementConnectedClients();
+                //decrementConnectedClients();
             }
         }
 
@@ -205,7 +205,7 @@ public class ClientHandler implements Runnable{
         }
     }
 
-    private void processMedicalRecord(String medicalRecordData) {
+    private void processMedicalRecord(String medicalRecordData, PrintWriter printWriter) {
         try {
             // convert to object
             MedicalRecord medicalRecord = deserializeMedicalRecord(medicalRecordData);
@@ -224,10 +224,7 @@ public class ClientHandler implements Runnable{
 
             //adding de medical record tu doctor list medicalRecords
             doctor.addMedicalRecord(medicalRecord);
-            //TODO:
-            // Responder al cliente con las notas y tratamiento
-            //String response = serializeDoctorsResponse(note, treatment);
-            //printWriter.println("SUCCESS|" + response);
+
 
         } catch (Exception e) {
             printWriter.println("ERROR|An error occurred while processing the medical record.");

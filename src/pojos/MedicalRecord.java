@@ -4,7 +4,6 @@ package pojos;
 
 import signals.ACC;
 import signals.EMG;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,15 +19,9 @@ public class MedicalRecord {
     private EMG emg;
     private Boolean genetic_background;
     private List<DoctorsNote> doctorsNotes;
-    private List<Doctor> doctors;
 
 
-    public List<Doctor> getDoctors() {
-        return doctors;
-    }
-    public void setDoctors(List<Doctor> doctors) {
-        this.doctors = doctors;
-    }
+
     public List<DoctorsNote> getDoctorsNotes() {
         return doctorsNotes;
     }
@@ -48,33 +41,9 @@ public class MedicalRecord {
         return patientName;
     }
 
-    public void setPatientName(String patientName) {
-        this.patientName = patientName;
-    }
-
-    public void setAge(int age) {
-        this.age = age;
-    }
-
-    public void setWeight(double weight) {
-        this.weight = weight;
-    }
-
-    public void setHeight(int height) {
-        this.height = height;
-    }
-
-    public void setSymptoms(List<String> symptoms) {
-        this.symptoms = symptoms;
-    }
 
     public String getPatientSurname() {
         return patientSurname;
-    }
-
-
-    public void setPatientSurname(String patientSurname) {
-        this.patientSurname = patientSurname;
     }
 
 
@@ -109,13 +78,6 @@ public class MedicalRecord {
         return symptoms;
     }
 
-   /* public ACC getAcceleration() {
-        //return acceleration;
-    }
-
-    public EMG getEmg() {
-        //return emg;
-    }*/
 
     public MedicalRecord(int age, double weight, int height, List<String> symptoms,ACC accSignal, EMG emgSignal, boolean geneticBackground, String patientName, String patientSurname) {
         this.age = age;
@@ -138,8 +100,6 @@ public class MedicalRecord {
         this.weight = weight;
         this.height = height;
         this.symptoms = symptoms;
-        this.acceleration = acceleration;
-        this.emg = emg;
         this.genetic_background = genetic_background;
         this.doctorsNotes = new ArrayList<>();
     }
@@ -154,8 +114,6 @@ public class MedicalRecord {
         this.doctorsNotes = new ArrayList<>(); //list vacía
 
     }
-
-
 
     @Override
     public String toString() {

@@ -15,7 +15,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -23,19 +22,15 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 public class MedicalRecordService {
 
-    private static final String FILE_PATH = "C:\\Users\\Laura Gil\\Desktop\\Uni\\Telemedicina\\EssentialTremor_Server2\\data\\MedicalRecord.csv";
-    //private static final String ACC_FILE = "C:\\Users\\Laura Gil\\Desktop\\Uni\\Telemedicina\\EssentialTremor_Server2\\data\\acc_signals.csv";
-    //private static final String EMG_FILE = "C:\\Users\\Laura Gil\\Desktop\\Uni\\Telemedicina\\EssentialTremor_Server2\\data\\emg_signals.csv";
-
+    private static final String FILE_PATH = "data/MedicalRecord.csv";
 
 
     // Read medical Record from CSV file
     public static List<MedicalRecord> readMedicalRecords() {
+        ensureFileExists();
         List<MedicalRecord> records = new ArrayList<>();
         List<String[]> rows = CsvHandler.readFromCsv(FILE_PATH);
 
@@ -59,6 +54,7 @@ public class MedicalRecordService {
 
 
     public static void saveMedicalRecordToCsv(MedicalRecord record) {
+        ensureFileExists();
         List<String> data = Arrays.asList(
                 record.getPatientName(),
                 record.getPatientSurname(),
@@ -113,27 +109,18 @@ public class MedicalRecordService {
         return fileName;
     }
 
-
-    private static List<Integer> parseIntegerList(String data) {
-        return Arrays.stream(data.split(","))
-                .map(Integer::parseInt)
-                .collect(Collectors.toList());
-    }
-
-
-
-    /*private static void ensureCsvHeaders(String filePath, String headers) {
-        File file = new File(filePath);
-        if (!file.exists()) {
-            try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath))) {
-                writer.write(headers);
-                writer.newLine();
-            } catch (IOException e) {
-                System.err.println("Error writing headers to CSV file: " + e.getMessage());
+    private static void ensureFileExists() {
+        try {
+            Path path = Paths.get(FILE_PATH);
+            if (!Files.exists(path)) {
+                Files.createDirectories(path.getParent()); // Crear directorios si no existen
+                Files.createFile(path); // Crear archivo vacío
+                System.out.println("MedicalRecord.csv created at: " + path.toAbsolutePath());
             }
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to create MedicalRecord.csv: " + e.getMessage());
         }
-    }*/
-
+    }
 
 
 }

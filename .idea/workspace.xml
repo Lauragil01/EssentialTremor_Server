@@ -4,27 +4,18 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="cf5eb29e-ec59-48b6-ac09-bd3496151015" name="Changes" comment="more changes">
-      <change afterPath="$PROJECT_DIR$/lib/bluecove-2.1.1-SNAPSHOT.jar" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/bITalino/BITalino.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/bITalino/BITalinoErrorTypes.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/bITalino/BITalinoException.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/bITalino/BitalinoDemo.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/bITalino/DeviceDiscoverer.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/bITalino/Frame.java" afterDir="false" />
+    <list default="true" id="cf5eb29e-ec59-48b6-ac09-bd3496151015" name="Changes" comment="accFiles">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/Doctor.csv" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/data/MedicalRecord.csv" beforeDir="false" afterPath="$PROJECT_DIR$/data/MedicalRecord.csv" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/data/Patient.csv" beforeDir="false" afterPath="$PROJECT_DIR$/data/Patient.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/User.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/sqlite_sequence.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/state.csv" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/pojos/Doctor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/pojos/Doctor.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/pojos/MedicalRecord.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/pojos/MedicalRecord.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/pojos/Patient.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/pojos/Patient.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/server/AdminHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/server/AdminHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pojos/State.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pojos/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/pojos/User.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/server/ClientHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/server/ClientHandler.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/server/MainServer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/server/MainServer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/services/DoctorService.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/services/MedicalRecordService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/services/MedicalRecordService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/services/PatientService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/services/PatientService.java" afterDir="false" />
     </list>
@@ -278,7 +269,14 @@
       <option name="project" value="LOCAL" />
       <updated>1733923630199</updated>
     </task>
-    <option name="localTasksCounter" value="14" />
+    <task id="LOCAL-00014" summary="accFiles">
+      <created>1734028665199</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1734028665199</updated>
+    </task>
+    <option name="localTasksCounter" value="15" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -307,6 +305,7 @@
     <MESSAGE value="correcting errors" />
     <MESSAGE value="adding corrections" />
     <MESSAGE value="more changes" />
-    <option name="LAST_COMMIT_MESSAGE" value="more changes" />
+    <MESSAGE value="accFiles" />
+    <option name="LAST_COMMIT_MESSAGE" value="accFiles" />
   </component>
 </project>
